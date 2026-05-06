@@ -1,184 +1,177 @@
 <!DOCTYPE html>
 <html lang="uk">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ARES-7 • Марсіанська База</title>
-    <link rel="stylesheet" href="style.css" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Exo+2:ital,wght@0,300;0,400;0,500;1,300&display=swap"
-        rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARES-7 • Марсіанська База</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Exo+2:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 </head>
-
 <body>
-    <div id="gameOverScreen" class="endscreen hidden">
-        <div class="endscreen-box">
-            <div class="endscreen-glyph" id="endGlyph">☠</div>
-            <h2 id="endTitle">МІСІЯ ПРОВАЛЕНА</h2>
-            <p id="endReason"></p>
-            <div class="end-stats">
-                <div><span id="finalSol"></span><small>Sol вижито</small></div>
-                <div><span id="finalRp"></span><small>RP зібрано</small></div>
-            </div>
-            <button id="restartBtn">↺ ПОЧАТИ ЗНОВУ</button>
+
+<div id="gameOverScreen" class="endscreen hidden">
+  <div class="endscreen-box">
+    <div class="endscreen-glyph" id="endGlyph">☠</div>
+    <h2 id="endTitle">МІСІЯ ПРОВАЛЕНА</h2>
+    <p id="endReason"></p>
+    <div class="end-stats">
+      <div><span id="finalSol"></span><small>Sol вижито</small></div>
+      <div><span id="finalRp"></span><small>RP зібрано</small></div>
+    </div>
+    <button id="restartBtn">↺ ПОЧАТИ ЗНОВУ</button>
+  </div>
+</div>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="logo">
+      <span class="logo-glyph">◈</span>
+      <div>
+        <h1>ARES-7</h1>
+        <span class="logo-sub">HELLAS PLANITIA</span>
+      </div>
+    </div>
+
+    <div class="sol-box">
+      <span class="sol-label">SOL</span>
+      <span id="solDisplay">1</span>
+      <span class="sol-night hidden" id="nightTag">НІCH</span>
+    </div>
+
+    <nav>
+      <a href="#" class="active" data-page="home">
+        <span class="nav-icon">◉</span> Головна
+      </a>
+      <a href="#" data-page="plant">
+        <span class="nav-icon">🌱</span> Рослина
+      </a>
+      <a href="#" data-page="buildings">
+        <span class="nav-icon">⬢</span> Будівлі
+      </a>
+      <a href="#" data-page="missions">
+        <span class="nav-icon">◈</span> Місії
+      </a>
+      <a href="#" data-page="research">
+        <span class="nav-icon">⬡</span> Технології
+      </a>
+      <a href="#" data-page="crew">
+        <span class="nav-icon">◎</span> Екіпаж
+      </a>
+      <a href="#" data-page="explore">
+        <span class="nav-icon">▣</span> Поверхня
+      </a>
+    </nav>
+
+    <div class="rp-box">
+      <span class="rp-label">RESEARCH POINTS</span>
+      <span id="rpDisplay">0</span>
+    </div>
+  </aside>
+
+  <main class="content">
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <h1 id="pageTitle">ГОЛОВНА БАЗА ARES-7</h1>
+        <p id="pageSubtitle">Сектор: Hellas Planitia</p>
+      </div>
+      <div class="top-bar-right">
+        <div class="clock-wrap">
+          <span id="clock">14:37</span>
+          <span class="temp">−42°C</span>
         </div>
-    </div>
+      </div>
+    </header>
 
-    <div class="layout">
-        <aside class="sidebar">
-            <div class="logo">
-                <span class="logo-glyph">◈</span>
-                <div>
-                    <h1>ARES-7</h1>
-                    <span class="logo-sub">HELLAS PLANITIA</span>
-                </div>
-            </div>
+    <!-- HOME -->
+    <div id="page-home" class="page active">
+      <div class="map-wrap">
+        <img src="https://i.postimg.cc/SxKMYnwg/Mb-OPN.jpg" alt="Мапа бази" class="map-img">
+        <div class="map-scanline"></div>
 
-            <div class="sol-box">
-                <span class="sol-label">SOL</span>
-                <span id="solDisplay">1</span>
-                <span class="sol-night hidden" id="nightTag">НІCH</span>
-            </div>
-
-            <nav>
-                <a href="#" class="active" data-page="home">
-                    <span class="nav-icon">◉</span> Головна
-                </a>
-                <a href="#" data-page="plant">
-                    <span class="nav-icon">🌱</span> Рослина
-                </a>
-                <a href="#" data-page="buildings">
-                    <span class="nav-icon">⬢</span> Будівлі
-                </a>
-                <a href="#" data-page="missions">
-                    <span class="nav-icon">◈</span> Місії
-                </a>
-                <a href="#" data-page="research">
-                    <span class="nav-icon">⬡</span> Технології
-                </a>
-                <a href="#" data-page="crew">
-                    <span class="nav-icon">◎</span> Екіпаж
-                </a>
-                <a href="#" data-page="explore">
-                    <span class="nav-icon">▣</span> Поверхня
-                </a>
-            </nav>
-
-            <div class="rp-box">
-                <span class="rp-label">RESEARCH POINTS</span>
-                <span id="rpDisplay">0</span>
-            </div>
-        </aside>
-
-        <main class="content">
-            <header class="top-bar">
-                <div class="top-bar-left">
-                    <h1 id="pageTitle">ГОЛОВНА БАЗА ARES-7</h1>
-                    <p id="pageSubtitle">Сектор: Hellas Planitia</p>
-                </div>
-                <div class="top-bar-right">
-                    <div class="clock-wrap">
-                        <span id="clock">14:37</span>
-                        <span class="temp">−42°C</span>
-                    </div>
-                </div>
-            </header>
-
-            <!-- HOME -->
-            <div id="page-home" class="page active">
-                <div class="map-wrap">
-                    <img src="https://i.postimg.cc/SxKMYnwg/Mb-OPN.jpg" alt="Мапа бази" class="map-img" />
-                    <div class="map-scanline"></div>
-
-                    <div class="pin" style="top: 44%; left: 32%" data-module="habitat" tabindex="0" role="button"
-                        aria-label="Житловий модуль">
-                        <div class="pin-dot" id="pin-habitat"></div>
-                        <span class="pin-tip">Житловий модуль</span>
-                        <div class="pin-alert hidden" id="alert-habitat">!</div>
-                    </div>
-                    <div class="pin" style="top: 57%; left: 78%" data-module="greenhouse" tabindex="0" role="button"
-                        aria-label="Оранжерея">
-                        <div class="pin-dot" id="pin-greenhouse"></div>
-                        <span class="pin-tip">Оранжерея</span>
-                        <div class="pin-alert hidden" id="alert-greenhouse">!</div>
-                    </div>
-                    <div class="pin" style="top: 58%; left: 35%" data-module="solar" tabindex="0" role="button"
-                        aria-label="Сонячні панелі">
-                        <div class="pin-dot" id="pin-solar"></div>
-                        <span class="pin-tip">Сонячні панелі</span>
-                        <div class="pin-alert hidden" id="alert-solar">!</div>
-                    </div>
-                    <div class="pin" style="top: 55%; left: 52%" data-module="lab" tabindex="0" role="button"
-                        aria-label="Лабораторія">
-                        <div class="pin-dot" id="pin-lab"></div>
-                        <span class="pin-tip">Лабораторія</span>
-                        <div class="pin-alert hidden" id="alert-lab">!</div>
-                    </div>
-                </div>
-                <div id="ticker" class="ticker"></div>
-            </div>
-
-            <!-- PLANT -->
-            <div id="page-plant" class="page">
-                <div id="plantPage"></div>
-            </div>
-
-            <!-- BUILDINGS -->
-            <div id="page-buildings" class="page">
-                <div class="card-grid" id="buildingsGrid"></div>
-            </div>
-
-            <!-- MISSIONS -->
-            <div id="page-missions" class="page">
-                <div class="card-grid" id="missionsGrid"></div>
-            </div>
-
-            <!-- RESEARCH -->
-            <div id="page-research" class="page">
-                <div class="research-tree" id="researchTree"></div>
-            </div>
-
-            <!-- CREW -->
-            <div id="page-crew" class="page">
-                <div class="card-grid" id="crewGrid"></div>
-            </div>
-
-            <!-- EXPLORE -->
-            <div id="page-explore" class="page">
-                <div class="explore-map" id="exploreMap"></div>
-            </div>
-        </main>
-
-        <aside class="sidebar-right">
-            <div class="panel-section">
-                <h3>РЕСУРСИ</h3>
-                <div id="resourceBars"></div>
-            </div>
-            <div class="panel-section">
-                <h3>МОДУЛІ</h3>
-                <div id="moduleList"></div>
-            </div>
-            <div class="panel-section">
-                <h3>ЦІЛЬ МІСІЇ</h3>
-                <div id="objectivesPanel"></div>
-            </div>
-            <div class="panel-section">
-                <h3>ЛОГ</h3>
-                <div id="eventLog" class="log"></div>
-            </div>
-        </aside>
-    </div>
-
-    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-        <div class="modal-box">
-            <button class="modal-close" aria-label="Закрити">✕</button>
-            <h2 id="modalTitle"></h2>
-            <div id="modalBody"></div>
+        <div class="pin" style="top:44%;left:32%;" data-module="habitat" tabindex="0" role="button" aria-label="Житловий модуль">
+          <div class="pin-dot" id="pin-habitat"></div>
+          <span class="pin-tip">Житловий модуль</span>
+          <div class="pin-alert hidden" id="alert-habitat">!</div>
         </div>
+        <div class="pin" style="top:57%;left:78%;" data-module="greenhouse" tabindex="0" role="button" aria-label="Оранжерея">
+          <div class="pin-dot" id="pin-greenhouse"></div>
+          <span class="pin-tip">Оранжерея</span>
+          <div class="pin-alert hidden" id="alert-greenhouse">!</div>
+        </div>
+        <div class="pin" style="top:58%;left:35%;" data-module="solar" tabindex="0" role="button" aria-label="Сонячні панелі">
+          <div class="pin-dot" id="pin-solar"></div>
+          <span class="pin-tip">Сонячні панелі</span>
+          <div class="pin-alert hidden" id="alert-solar">!</div>
+        </div>
+        <div class="pin" style="top:55%;left:52%;" data-module="lab" tabindex="0" role="button" aria-label="Лабораторія">
+          <div class="pin-dot" id="pin-lab"></div>
+          <span class="pin-tip">Лабораторія</span>
+          <div class="pin-alert hidden" id="alert-lab">!</div>
+        </div>
+      </div>
+      <div id="ticker" class="ticker"></div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- PLANT -->
+    <div id="page-plant" class="page">
+      <div id="plantPage"></div>
+    </div>
+
+    <!-- BUILDINGS -->
+    <div id="page-buildings" class="page">
+      <div class="card-grid" id="buildingsGrid"></div>
+    </div>
+
+    <!-- MISSIONS -->
+    <div id="page-missions" class="page">
+      <div class="card-grid" id="missionsGrid"></div>
+    </div>
+
+    <!-- RESEARCH -->
+    <div id="page-research" class="page">
+      <div class="research-tree" id="researchTree"></div>
+    </div>
+
+    <!-- CREW -->
+    <div id="page-crew" class="page">
+      <div class="card-grid" id="crewGrid"></div>
+    </div>
+
+    <!-- EXPLORE -->
+    <div id="page-explore" class="page">
+      <div class="explore-map" id="exploreMap"></div>
+    </div>
+  </main>
+
+  <aside class="sidebar-right">
+    <div class="panel-section">
+      <h3>РЕСУРСИ</h3>
+      <div id="resourceBars"></div>
+    </div>
+    <div class="panel-section">
+      <h3>МОДУЛІ</h3>
+      <div id="moduleList"></div>
+    </div>
+    <div class="panel-section">
+      <h3>ЦІЛЬ МІСІЇ</h3>
+      <div id="objectivesPanel"></div>
+    </div>
+    <div class="panel-section">
+      <h3>ЛОГ</h3>
+      <div id="eventLog" class="log"></div>
+    </div>
+  </aside>
+</div>
+
+<div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-box">
+    <button class="modal-close" aria-label="Закрити">✕</button>
+    <h2 id="modalTitle"></h2>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
 </body>
-
 </html>
