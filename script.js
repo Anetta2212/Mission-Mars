@@ -37,49 +37,50 @@ function buildIntro() {
 
   const box = document.createElement("div");
   box.style.cssText = `
-    max-width:520px;width:90%;
+    max-width:520px;width:92%;
     background:rgba(22,11,6,0.98);
     border:1px solid #e85d04;
-    padding:40px 44px;
-    clip-path:polygon(0 0,calc(100% - 24px) 0,100% 24px,100% 100%,24px 100%,0 calc(100% - 24px));
+    padding:32px 28px;
     text-align:center;
+    box-sizing:border-box;
   `;
 
   function render() {
     const s = slides[idx];
     box.innerHTML = `
-      <div style="font-size:44px;margin-bottom:16px">${s.icon}</div>
-      <div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;
-                  letter-spacing:3px;color:#ffb347;text-transform:uppercase;margin-bottom:18px">
+      <div style="font-size:38px;margin-bottom:14px">${s.icon}</div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;
+                  letter-spacing:2px;color:#ffb347;text-transform:uppercase;margin-bottom:16px">
         ${s.title}
       </div>
-      <div style="font-size:12px;color:#8a5c44;line-height:1.9;white-space:pre-line;margin-bottom:28px">
+      <div style="font-size:13px;color:#8a5c44;line-height:1.85;white-space:pre-line;margin-bottom:24px;text-align:left">
         ${s.text}
       </div>
-      <div style="display:flex;justify-content:center;gap:6px;margin-bottom:24px">
+      <div style="display:flex;justify-content:center;gap:6px;margin-bottom:20px">
         ${slides.map((_, i) => `
-          <div style="width:28px;height:3px;background:${i === idx ? "#e85d04" : "#3a1a0a"}"></div>
+          <div style="width:24px;height:3px;background:${i === idx ? "#e85d04" : "#3a1a0a"}"></div>
         `).join("")}
       </div>
-      <button data-intro-btn style="
-        padding:12px 36px;
+      <button id="introBtnNext" style="
+        padding:12px 32px;
         background:rgba(232,93,4,0.2);border:1px solid #e85d04;
         color:#f0cdb8;font-family:'Rajdhani',sans-serif;font-size:14px;
-        font-weight:700;letter-spacing:3px;text-transform:uppercase;
-        cursor:pointer;
-        clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);
+        font-weight:700;letter-spacing:2px;text-transform:uppercase;
+        cursor:pointer;width:100%;
       ">
         ${idx < slides.length - 1 ? "ДАЛІ →" : "РОЗПОЧАТИ МІСІЮ"}
       </button>
     `;
+    // вішаємо після кожного render бо innerHTML перестворює елемент
+    document.getElementById("introBtnNext").addEventListener("click", () => {
+      if (idx < slides.length - 1) { idx++; render(); }
+      else { screen.remove(); }
+    });
   }
 
-  // delegate click instead of re-binding each render
-  box.addEventListener("click", e => {
-    if (!e.target.dataset.introBtn) return;
-    if (idx < slides.length - 1) { idx++; render(); }
-    else { screen.remove(); }
-  });
+  render();
+  screen.appendChild(box);
+  document.body.appendChild(screen);
 }
 
 
@@ -115,10 +116,10 @@ const game = {
     { id: "rover",   name: "Рейд на ровері",       icon: "🚗", desc: "Доїхати до аномалії за три км.",     time: 40, reward: 120, type: "rp",     done: false, active: false, progress: 0, needs: "garage" },
     { id: "meteor",  name: "Аналіз метеорита",     icon: "☄️", desc: "Дослідити уламки поблизу бази.",     time: 35, reward: 90,  type: "rp",     done: false, active: false, progress: 0, needs: null },
     { id: "oxygen2", name: "Запуск генератора O₂", icon: "💨", desc: "Увімкнути резервний кисневий блок.", time: 20, reward: 25,  type: "oxygen", done: false, active: false, progress: 0, needs: "medlab" },
-    // evac missions
+    // місії евакуації
     { id: "evac1",   name: "Сигнал евакуації",     icon: "📡", desc: "Надіслати сигнал SOS на Землю.",     time: 30, reward: 60,  type: "rp",     done: false, active: false, progress: 0, needs: "antenna", evacStep: 1 },
     { id: "evac2",   name: "Підготовка капсули",   icon: "🚀", desc: "Перевірити евакуаційну капсулу.",    time: 35, reward: 40,  type: "rp",     done: false, active: false, progress: 0, needs: "garage",  evacStep: 2 },
-    { id: "evac3",   name: "Евакуація екіпажу",    icon: "🛸", desc: "Посадка і запуск капсули.",          time: 45, reward: 0,   type: "rp",     done: false, active: false, progress: 0, needs: null,     evacStep: 3, needsEvac: true }
+    { id: "evac3",   name: "Евакуація екіпажу",    icon: "🛸", desc: "Посадка і запуск капсули.",          time: 45, reward: 0,   type: "rp",     done: false, active: false, progress: 0, needs: "garage", evacStep: 3 }
   ],
 
   tech: [
@@ -146,7 +147,7 @@ const game = {
     { id: "far_east",      name: "Далекий схід",       icon: "🌅", desc: "Невідома зона далеко від бази.",     bonus: "+150 RP",                bonusType: "rp",           bonusValue: 150,open: false, unlocking: false, progress: 0, cost: 170, needs: "mineral_ridge",top: 2, left: 3 }
   ],
 
-  // plant data
+  // стан рослини
   plant: {
     stage: 0,          // 0=не розпочато, 1..4=активний/зроблений, 5=завершено
     stageProgress: 0,  // прогрес поточного етапу (0..100)
@@ -169,18 +170,18 @@ const game = {
 
   tradeAvailable: false, tradeNextSol: 6, tradeOffer: null,
 
-  // objective flags
+  // прапори цілей
   objectives: {
     plant:  false,  // рослина виросла
     survive: false, // Sol 20+
     evac:   false   // евакуація виконана
   },
 
-  // ending type
+  // тип кінцівки
   ending: null
 };
 
-// plant stages config
+// етапи рослини
 const PLANT_STAGES = [
   {
     num: 1, name: "Підготовка ґрунту", icon: "🪨",
@@ -254,7 +255,7 @@ const isNight   = () => game.hour >= 18 || game.hour < 6;
 
 let currentPage = "home";
 
-// --- nav
+// навігація
 function goTo(page) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.querySelectorAll("nav a").forEach(a => a.classList.remove("active"));
@@ -286,7 +287,7 @@ document.querySelectorAll("nav a[data-page]").forEach(link => {
   link.addEventListener("click", e => { e.preventDefault(); goTo(link.dataset.page); });
 });
 
-// --- ticker
+// рядок новин
 const tickerLines = [
   "Зв'язок із Землею: затримка 20 хв • Всі системи в автономному режимі",
   "Температура поверхні: -42°C • Вітер: 18 м/с • Видимість: 4 км",
@@ -302,7 +303,7 @@ function showTicker(text) {
   setTimeout(() => { tickerIdx = (tickerIdx + 1) % tickerLines.length; showTicker(tickerLines[tickerIdx]); }, 15000);
 }
 
-// --- log
+// лог
 const pad = n => String(n).padStart(2, "0");
 
 function log(text, type = "") {
@@ -314,7 +315,7 @@ function log(text, type = "") {
   while (el("eventLog").children.length > 35) el("eventLog").lastChild.remove();
 }
 
-// --- render resources panel
+// ресурси
 function drawResources() {
   el("resourceBars").innerHTML = [
     { key: "oxygen", label: "Кисень"  },
@@ -348,7 +349,7 @@ function emergencyRefill(key) {
   drawResources();
 }
 
-// --- module list in right panel
+// список модулів
 function drawModuleList() {
   el("moduleList").innerHTML = Object.entries(game.modules).map(([key, mod]) => {
     const text = mod.crisis ? "⚠ КРИЗА" : "Норма";
@@ -362,7 +363,7 @@ function drawModuleList() {
   }).join("");
 }
 
-// --- map pins
+// піни
 function updatePins() {
   Object.entries(game.modules).forEach(([key, mod]) => {
     const dot   = el(`pin-${key}`);
@@ -380,7 +381,7 @@ function updatePins() {
   } else if (badge) badge.remove();
 }
 
-// --- clock
+// годинник
 function tickTime() {
   game.min++;
   if (game.min >= 60) { game.min = 0; game.hour++; }
@@ -403,7 +404,7 @@ function onNewSol() {
   game._dailyUpgraded = 0; game._dailyZoneOpened = 0;
 }
 
-// --- resource drain per tick
+// витрата ресурсів
 function tickResources() {
   const r = game.res;
   const b = game.zoneBonuses;
@@ -464,7 +465,7 @@ function tickResources() {
 const hasTech     = id => game.tech.find(t => t.id === id)?.done;
 const hasBuilding = id => game.buildings[id]?.built;
 
-// --- random crises
+// кризи
 function maybeTriggerCrisis() {
   const chance = 0.005 + game.sol * 0.00015;
   if (Math.random() > chance) return;
@@ -478,7 +479,7 @@ function maybeTriggerCrisis() {
   showTicker(`⚠ ${crises[type].label} у "${mod.name}". Клікни на піні!`);
 }
 
-// --- missions
+// місії
 function tickMissions() {
   game.missions.forEach(m => {
     if (!m.active || m.done) return;
@@ -506,16 +507,16 @@ function finishMission(m) {
   }
 }
 
-// --- plant page
+// сторінка рослини
 function tickPlant() {
   const p = game.plant;
   if (!p.growing || p.stage === 0 || p.stage > 4) return;
 
   const cfg = PLANT_STAGES[p.stage - 1];
 
-  // stop growing if conditions break
+  
   if (!cfg.requires()) {
-    // умови порушено — ріст зупиняється, але не скидається
+    // зупиняємо ріст якщо умови порушені
     if (currentPage === "plant") drawPlant();
     return;
   }
@@ -532,7 +533,7 @@ function tickPlant() {
       showTicker("🌱 НЕМОЖЛИВЕ СТАЛО МОЖЛИВИМ — перша рослина на Марсі!");
       checkEnding();
     } else {
-      // move to next stage
+      // наступний етап
       setTimeout(() => {
         if (!game.over) { p.stage++; p.stageProgress = 0; }
         if (currentPage === "plant") drawPlant();
@@ -617,7 +618,7 @@ function drawPlant() {
     </div>`;
 }
 
-// --- explore map
+// карта поверхні
 function tickExplore() {
   game.zones.forEach(zone => {
     if (!zone.unlocking || zone.open) return;
@@ -697,7 +698,7 @@ function drawExplore() {
   }).join("");
 }
 
-// --- daily tasks
+// щоденні завдання
 function generateDailyTasks() {
   game.dailyTasks = [...DAILY_POOL].sort(() => Math.random() - 0.5)
     .slice(0, 3).map(t => ({ ...t, claimed: false }));
@@ -715,7 +716,7 @@ function claimDailyTask(idx) {
   drawMissions();
 }
 
-// --- earth trade
+// торгівля із землею
 function checkTradeArrival() {
   if (game.sol >= game.tradeNextSol) {
     game.tradeAvailable = true;
@@ -745,7 +746,7 @@ function declineTrade() {
   drawMissions();
 }
 
-// --- objectives
+// цілі
 function drawObjectives() {
   const obj = game.objectives;
   const items = [
@@ -763,7 +764,7 @@ function drawObjectives() {
     </div>`).join("");
 }
 
-// --- endings
+// кінцівки
 function checkEnding() {
   const { plant, survive, evac } = game.objectives;
   survive || (game.objectives.survive = game.sol >= 20);
@@ -819,7 +820,7 @@ function triggerEnding(type) {
   el("gameOverScreen").classList.remove("hidden");
 }
 
-// --- crew daily update
+// щоденний тік екіпажу
 function dailyCrewTick() {
   const medlab = hasBuilding("medlab");
   const suit   = hasTech("medsuit");
@@ -831,14 +832,14 @@ function dailyCrewTick() {
   if (currentPage === "crew") drawCrew();
 }
 
-// --- defeat check
+// перевірка поразки
 function checkDefeat() {
   if (game.over) return;
   for (const [key, val] of Object.entries(game.res)) {
     if (val <= 0) { triggerEnding("defeat"); return; }
   }
   if (!crewAlive()) { triggerEnding("defeat"); return; }
-  // sol 20 survival check
+  
   if (game.sol >= 20 && !game.objectives.survive) {
     game.objectives.survive = true;
     log("Ціль виконана: 20 солів виживання!", "upgrade");
@@ -847,7 +848,7 @@ function checkDefeat() {
   }
 }
 
-// --- buildings page
+// будівлі
 function drawBuildings() {
   el("buildingsGrid").innerHTML = Object.entries(game.buildings).map(([key, b]) => {
     const zoneOk = !b.needs || game.zones.find(z => z.id === b.needs)?.open;
@@ -880,13 +881,15 @@ function build(key) {
   drawBuildings();
 }
 
-// --- missions
+// місії
 function drawMissions() {
   const evac1Done = game.missions.find(m => m.evacStep === 1)?.done;
   const evac2Done = game.missions.find(m => m.evacStep === 2)?.done;
 
   const mCards = game.missions.map(m => {
-    const reqOk = !m.needs || (m.evacStep === 3 ? (evac1Done && evac2Done) : game.buildings[m.needs]?.built);
+    const reqOk = m.evacStep === 3
+      ? (evac1Done && evac2Done && game.buildings["garage"]?.built)
+      : (!m.needs || game.buildings[m.needs]?.built);
     const pct   = Math.round((m.progress / m.time) * 100);
     const prize = m.type === "rp" ? `+${m.reward} RP` : m.reward > 0 ? `+${m.reward} ${resLabel[m.type]}` : "Евакуація";
     let btnTxt, btnCls, disabled;
@@ -943,7 +946,7 @@ function startMission(id) {
   drawMissions();
 }
 
-// --- research tree
+// дослідження
 function drawResearch() {
   el("researchTree").innerHTML = [1, 2, 3].map(tier => `
     <div>
@@ -981,7 +984,7 @@ function research(id) {
   drawResearch();
 }
 
-// --- crew page
+// екіпаж
 function drawCrew() {
   el("crewGrid").innerHTML = game.crew.map(c => {
     const hCol = c.health < 30 ? "#ff3d3d" : c.health < 60 ? "#ffb347" : "#e85d04";
@@ -1008,7 +1011,7 @@ function drawCrew() {
   }).join("");
 }
 
-// --- module modal
+// модальне вікно модуля
 function openModule(key) {
   const mod = game.modules[key];
   if (!mod) return;
@@ -1070,7 +1073,7 @@ document.querySelectorAll(".pin").forEach(pin => {
   });
 });
 
-// --- restart
+// рестарт
 function restart() {
   game.sol = 1; game.rp = 0;
   game.over = false; game.ending = null; game.paused = false;
@@ -1103,7 +1106,7 @@ function restart() {
 
 el("restartBtn").addEventListener("click", restart);
 
-// 1 tick = 1 real sec = 1 mars minute
+// 1 тік = 1 секунда = 1 марсіанська хвилина
 function loop() {
   if (game.over || game.paused) return;
   tickTime();
