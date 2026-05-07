@@ -71,8 +71,8 @@ function buildIntro() {
         ${idx < slides.length - 1 ? "ДАЛІ →" : "РОЗПОЧАТИ МІСІЮ"}
       </button>
     `;
-    // вішаємо після кожного render бо innerHTML перестворює елемент
-    document.getElementById("introBtnNext").addEventListener("click", () => {
+    // вішаємо на box.querySelector бо елемент ще може не бути в document
+    box.querySelector("button").addEventListener("click", () => {
       if (idx < slides.length - 1) { idx++; render(); }
       else { screen.remove(); }
     });
