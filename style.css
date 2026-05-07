@@ -1,4 +1,4 @@
-/* ── Variables ───────────────────────────────────── */
+/* vars */
 :root {
   --orange:     #e85d04;
   --orange-dim: #9d2b00;
@@ -25,10 +25,10 @@
   --font-body:    'Exo 2', sans-serif;
 }
 
-/* ── Reset ───────────────────────────────────────── */
+/* reset */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* ── Body ────────────────────────────────────────── */
+/* body */
 body {
   font-family: var(--font-body);
   background: var(--bg-deep);
@@ -44,7 +44,6 @@ body {
   background-attachment: fixed;
 }
 
-/* subtle scan-line overlay on the whole page */
 body::after {
   content: '';
   position: fixed;
@@ -60,14 +59,14 @@ body::after {
   z-index: 9000;
 }
 
-/* ── Layout ──────────────────────────────────────── */
+/* layout */
 .layout {
   display: grid;
   grid-template-columns: 210px 1fr 280px;
   height: 100vh;
 }
 
-/* ── Sidebar ─────────────────────────────────────── */
+/* sidebar */
 .sidebar {
   background: var(--bg-panel);
   border-right: 1px solid var(--border);
@@ -80,7 +79,6 @@ body::after {
   overflow: hidden;
 }
 
-/* corner accent */
 .sidebar::before {
   content: '';
   position: absolute;
@@ -267,7 +265,7 @@ nav a.active {
   text-shadow: 0 0 12px rgba(255, 179, 71, 0.4);
 }
 
-/* ── Main content ────────────────────────────────── */
+/* main */
 .content {
   padding: 18px;
   display: flex;
@@ -325,7 +323,7 @@ nav a.active {
 .page { display: none; flex: 1; flex-direction: column; gap: 10px; overflow: hidden; }
 .page.active { display: flex; }
 
-/* ── Map ─────────────────────────────────────────── */
+/* map */
 .map-wrap {
   position: relative;
   flex: 1;
@@ -350,7 +348,7 @@ nav a.active {
   pointer-events: none;
 }
 
-/* ── Pins ────────────────────────────────────────── */
+/* pins */
 .pin {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -409,7 +407,7 @@ nav a.active {
 }
 .pin-alert.hidden { display: none; }
 
-/* ── Ticker ──────────────────────────────────────── */
+/* ticker */
 .ticker {
   height: 28px;
   background: rgba(13, 7, 4, 0.8);
@@ -426,7 +424,7 @@ nav a.active {
 
 .ticker-text { white-space: nowrap; animation: scroll 14s linear forwards; }
 
-/* ── Cards ───────────────────────────────────────── */
+/* cards */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
@@ -556,7 +554,7 @@ nav a.active {
   margin-bottom: 8px;
 }
 
-/* ── Research tree ───────────────────────────────── */
+/* research */
 .research-tree {
   display: flex;
   flex-direction: column;
@@ -631,7 +629,7 @@ nav a.active {
 .rcard-btn:hover:not(:disabled) { background: rgba(255, 179, 71, 0.25); color: #fff; }
 .rcard-btn:disabled { opacity: 0.25; cursor: not-allowed; }
 
-/* ── Crew ────────────────────────────────────────── */
+/* crew */
 .crew-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -688,7 +686,7 @@ nav a.active {
   border-top: 1px solid var(--border);
 }
 
-/* ── Explore ─────────────────────────────────────── */
+/* explore */
 .explore-map {
   flex: 1;
   display: grid;
@@ -747,7 +745,7 @@ nav a.active {
 .zone-progress { height: 3px; background: rgba(255,255,255,0.06); margin-top: 5px; overflow: hidden; }
 .zone-progress-fill { height: 100%; background: linear-gradient(90deg, var(--orange-dim), var(--amber)); transition: width 0.8s ease; }
 
-/* ── Plant page ──────────────────────────────────── */
+/* plant */
 #plantPage {
   display: flex;
   flex-direction: column;
@@ -902,7 +900,7 @@ nav a.active {
 .stage-btn:hover:not(:disabled) { background: rgba(232, 93, 4, 0.35); color: #fff; border-color: var(--orange); }
 .stage-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-/* ── Right panel ─────────────────────────────────── */
+/* right panel */
 .sidebar-right {
   background: var(--bg-panel);
   border-left: 1px solid var(--border);
@@ -958,7 +956,6 @@ nav a.active {
 
 .panel-section:first-child h3 { margin-top: 0; }
 
-/* resource bars */
 .res-bar { margin-bottom: 12px; }
 .res-labels { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px; }
 .res-pct { font-family: var(--font-mono); font-size: 12px; }
@@ -1003,7 +1000,6 @@ nav a.active {
 }
 .emerg-btn:hover { background: rgba(255, 61, 61, 0.25); color: #fff; }
 
-/* module rows */
 .module-row {
   display: flex;
   align-items: center;
@@ -1035,7 +1031,6 @@ nav a.active {
 .module-status.crisis  { background: rgba(255,61,61,0.15); color: var(--red); animation: blink 0.7s infinite alternate; }
 .module-status.offline { background: rgba(80,40,20,0.3); color: var(--text-dim); }
 
-/* log */
 .log {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -1053,13 +1048,12 @@ nav a.active {
 .log-entry.warning { color: var(--amber); }
 .log-entry.upgrade { color: #ffdd88; }
 
-/* objectives */
 #objectivesPanel { font-size: 11px; }
 #objectivesPanel .obj-done   { color: var(--green); }
 #objectivesPanel .obj-active { color: var(--amber); }
 #objectivesPanel .obj-locked { color: var(--text-muted); }
 
-/* ── Modal ───────────────────────────────────────── */
+/* modal */
 .modal {
   display: none;
   position: fixed; inset: 0;
@@ -1126,7 +1120,7 @@ nav a.active {
 .btn-upgrade:hover:not(:disabled) { background: rgba(255, 179, 71, 0.28); color: #fff; }
 .btn-upgrade:disabled { opacity: 0.25; cursor: not-allowed; }
 
-/* ── End screen ──────────────────────────────────── */
+/* end screen */
 .endscreen {
   position: fixed; inset: 0;
   background: rgba(3, 1, 0, 0.97);
@@ -1169,7 +1163,7 @@ nav a.active {
 }
 #restartBtn:hover { background: rgba(232, 93, 4, 0.45); color: #fff; }
 
-
+/* animations */
 @keyframes pulse {
   0%, 100% { transform: scale(1); box-shadow: 0 0 10px var(--orange), 0 0 20px rgba(232,93,4,0.4); }
   50%       { transform: scale(1.18); box-shadow: 0 0 16px var(--orange-glow), 0 0 32px rgba(232,93,4,0.6); }
@@ -1181,7 +1175,7 @@ nav a.active {
 @keyframes blink { from { opacity: 0.6; } to { opacity: 1; } }
 @keyframes scroll { from { transform: translateX(100%); } to { transform: translateX(-200%); } }
 
-
+/* mobile */
 @media (max-width: 900px) {
   body { overflow-y: auto; }
   .layout { grid-template-columns: 1fr; height: auto; min-height: 100vh; }
