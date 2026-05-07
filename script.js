@@ -19,7 +19,7 @@ function buildIntro() {
     {
       icon: "🎯",
       title: "ТРИ ЦІЛІ МІСІЇ",
-      text: "① Виростити першу рослину на Марсі\n   (через оранжерею + дослідження)\n\n② Протриматись 20 солів\n\n③ Підготувати евакуацію екіпажу\n   (антена + місії зв'язку)"
+      text: "① Виростити першу рослину на Марсі\n   (через оранжерею + дослідження)\n\n② Протриматись 5 солів\n\n③ Підготувати евакуацію екіпажу\n   (антена + місії зв'язку)"
     },
     {
       icon: "⚠",
@@ -87,7 +87,7 @@ function buildIntro() {
 const game = {
   sol: 1, rp: 0,
   paused: false, over: false,
-  hour: 14, min: 37,
+  hour: 6, min: 0,
 
   res: { oxygen: 78, water: 54, energy: 63 },
 
@@ -103,23 +103,25 @@ const game = {
     garage:      { name: "Гараж роверів",      icon: "🚗", cost: 100, built: false, desc: "Розблоковує місії на поверхні" },
     medlab:      { name: "Медичний блок",      icon: "⚕️", cost: 120, built: false, desc: "Екіпаж відновлює здоров'я щодня" },
     antenna:     { name: "Антена зв'язку",     icon: "📡", cost: 80,  built: false, desc: "+20% RP і потрібна для евакуації" },
-    greenhouse2: { name: "Друга оранжерея",    icon: "🌿", cost: 160, built: false, desc: "Оранжерея виробляє +0.04 води/тік" },
-    battery:     { name: "Акумуляторний блок", icon: "🔋", cost: 130, built: false, desc: "+0.04 енергії вночі" },
-    reactor:     { name: "Резервний реактор",  icon: "⚛️", cost: 250, built: false, desc: "Енергія не падає нижче 20%" },
-    ice_drill:   { name: "Льодобур",           icon: "🧊", cost: 200, built: false, desc: "+0.10 води/тік", needs: "crater_north" }
+    battery:     { name: "Акумуляторний блок", icon: "🔋", cost: 100, built: false, desc: "+0.05 енергії вночі" },
+    growlight:   { name: "Лампи росту",        icon: "💡", cost: 140, built: false, desc: "Рослина росте вдвічі швидше" },
+    o2pump:      { name: "Кисневий насос",     icon: "🌬️", cost: 130, built: false, desc: "+0.03 кисню/тік постійно" },
+    workshop:    { name: "Ремонтний відсік",   icon: "🔧", cost: 110, built: false, desc: "Кризи тривають вдвічі менше" }
   },
 
   missions: [
-    { id: "survey",  name: "Розвідка кратера",   icon: "🗺️", desc: "Вивчити рельєф на схід від бази.",    time: 25, reward: 70,  type: "rp",     done: false, active: false, progress: 0, needs: null },
-    { id: "sample",  name: "Збір ґрунту",         icon: "🧪", desc: "Зібрати п'ять зразків реголіту.",     time: 18, reward: 50,  type: "rp",     done: false, active: false, progress: 0, needs: null },
-    { id: "repair",  name: "Ремонт труби",         icon: "🔩", desc: "Замінити зовнішній водяний клапан.",  time: 12, reward: 22,  type: "water",  done: false, active: false, progress: 0, needs: null },
-    { id: "rover",   name: "Рейд на ровері",       icon: "🚗", desc: "Доїхати до аномалії за три км.",     time: 40, reward: 120, type: "rp",     done: false, active: false, progress: 0, needs: "garage" },
-    { id: "meteor",  name: "Аналіз метеорита",     icon: "☄️", desc: "Дослідити уламки поблизу бази.",     time: 35, reward: 90,  type: "rp",     done: false, active: false, progress: 0, needs: null },
-    { id: "oxygen2", name: "Запуск генератора O₂", icon: "💨", desc: "Увімкнути резервний кисневий блок.", time: 20, reward: 25,  type: "oxygen", done: false, active: false, progress: 0, needs: "medlab" },
+    { id: "survey",   name: "Розвідка кратера",      icon: "🗺️", desc: "Вивчити рельєф на схід від бази.",           time: 20, reward: 70,  type: "rp",     done: false, active: false, progress: 0, needs: null },
+    { id: "sample",   name: "Збір ґрунту",            icon: "🧪", desc: "Зібрати зразки реголіту для лабораторії.",   time: 15, reward: 50,  type: "rp",     done: false, active: false, progress: 0, needs: null },
+    { id: "repair",   name: "Ремонт труби",            icon: "🔩", desc: "Полагодити зовнішній водяний клапан.",       time: 10, reward: 25,  type: "water",  done: false, active: false, progress: 0, needs: null },
+    { id: "o2patch",  name: "Ремонт кисневого шланга",icon: "💨", desc: "Усунути мікровитік в житловому модулі.",     time: 12, reward: 20,  type: "oxygen", done: false, active: false, progress: 0, needs: null },
+    { id: "rover",    name: "Рейд на ровері",          icon: "🚗", desc: "Дослідити аномалію за три км від бази.",    time: 30, reward: 120, type: "rp",     done: false, active: false, progress: 0, needs: "garage" },
+    { id: "meteor",   name: "Аналіз метеорита",        icon: "☄️", desc: "Дослідити фрагменти біля посадкового майданчика.", time: 25, reward: 90, type: "rp", done: false, active: false, progress: 0, needs: null },
+    { id: "soiltest", name: "Тест ґрунту для рослини", icon: "🌱", desc: "Взяти проби для визначення складу ґрунту.", time: 15, reward: 40,  type: "rp",     done: false, active: false, progress: 0, needs: null },
+    { id: "solarfix", name: "Чищення панелей",         icon: "⚡", desc: "Змести пил із сонячних панелей.",           time: 10, reward: 15,  type: "energy", done: false, active: false, progress: 0, needs: null },
     // місії евакуації
-    { id: "evac1",   name: "Сигнал евакуації",     icon: "📡", desc: "Надіслати сигнал SOS на Землю.",     time: 30, reward: 60,  type: "rp",     done: false, active: false, progress: 0, needs: "antenna", evacStep: 1 },
-    { id: "evac2",   name: "Підготовка капсули",   icon: "🚀", desc: "Перевірити евакуаційну капсулу.",    time: 35, reward: 40,  type: "rp",     done: false, active: false, progress: 0, needs: "garage",  evacStep: 2 },
-    { id: "evac3",   name: "Евакуація екіпажу",    icon: "🛸", desc: "Посадка і запуск капсули.",          time: 45, reward: 0,   type: "rp",     done: false, active: false, progress: 0, needs: "garage", evacStep: 3 }
+    { id: "evac1",    name: "Сигнал евакуації",        icon: "📡", desc: "Надіслати сигнал SOS на Землю.",             time: 25, reward: 60,  type: "rp",     done: false, active: false, progress: 0, needs: "antenna", evacStep: 1 },
+    { id: "evac2",    name: "Підготовка капсули",      icon: "🚀", desc: "Перевірити евакуаційну капсулу.",            time: 30, reward: 40,  type: "rp",     done: false, active: false, progress: 0, needs: "garage",  evacStep: 2 },
+    { id: "evac3",    name: "Евакуація екіпажу",       icon: "🛸", desc: "Посадка і запуск капсули.",                  time: 40, reward: 0,   type: "rp",     done: false, active: false, progress: 0, needs: "garage",  evacStep: 3 }
   ],
 
   tech: [
@@ -134,17 +136,17 @@ const game = {
   ],
 
   zones: [
-    { id: "base_area",     name: "Периметр бази",     icon: "🏠", desc: "Вже досліджена.",                     bonus: "Стартова зона",          bonusType: null,           bonusValue: 0,  open: true,  unlocking: false, progress: 0, cost: 0,   needs: null,          top: 1, left: 1 },
-    { id: "crater_north",  name: "Північний кратер",  icon: "🌑", desc: "Поклади льоду.",                      bonus: "Розблоковує Льодобур",   bonusType: "unlock_b",     bonusValue: 0,  open: false, unlocking: false, progress: 0, cost: 50,  needs: null,          top: 0, left: 1 },
-    { id: "lava_field",    name: "Лавове поле",        icon: "🌋", desc: "Мінерали для досліджень.",            bonus: "+50 RP",                 bonusType: "rp",           bonusValue: 50, open: false, unlocking: false, progress: 0, cost: 60,  needs: null,          top: 0, left: 2 },
-    { id: "dust_plain",    name: "Пилова рівнина",     icon: "🌪",  desc: "Ідеальне місце для панелей.",        bonus: "+15% енергії",           bonusType: "energy_boost", bonusValue: 0,  open: false, unlocking: false, progress: 0, cost: 70,  needs: "lava_field",  top: 0, left: 3 },
-    { id: "canyon_west",   name: "Західний каньйон",   icon: "🏔",  desc: "Відклади мінералів.",               bonus: "+30 води",               bonusType: "water",        bonusValue: 30, open: false, unlocking: false, progress: 0, cost: 75,  needs: "base_area",   top: 1, left: 0 },
-    { id: "ice_valley",    name: "Льодяна долина",     icon: "❄️", desc: "Підземний лід.",                     bonus: "+0.05 води/тік",         bonusType: "water_regen",  bonusValue: 0,  open: false, unlocking: false, progress: 0, cost: 100, needs: "crater_north",top: 1, left: 2 },
-    { id: "mineral_ridge", name: "Мінеральний хребет", icon: "💎", desc: "Унікальні мінерали.",                bonus: "+0.3 RP/тік",            bonusType: "rp_regen",     bonusValue: 0,  open: false, unlocking: false, progress: 0, cost: 85,  needs: "lava_field",  top: 1, left: 3 },
-    { id: "shelter_ruins", name: "Покинутий зонд",     icon: "🛸", desc: "Уламки старого марсохода NASA.",     bonus: "+80 RP",                 bonusType: "rp",           bonusValue: 80, open: false, unlocking: false, progress: 0, cost: 90,  needs: "canyon_west", top: 2, left: 0 },
-    { id: "south_plateau", name: "Південне плато",     icon: "🗻", desc: "Рівнина для панелей.",               bonus: "+25% RP від лабораторії",bonusType: "rp_lab_boost", bonusValue: 0,  open: false, unlocking: false, progress: 0, cost: 120, needs: "canyon_west", top: 2, left: 1 },
-    { id: "deep_crater",   name: "Глибокий кратер",    icon: "🕳",  desc: "Найглибший кратер.",                bonus: "+60 кисню",              bonusType: "oxygen",       bonusValue: 60, open: false, unlocking: false, progress: 0, cost: 110, needs: "crater_north",top: 2, left: 2 },
-    { id: "far_east",      name: "Далекий схід",       icon: "🌅", desc: "Невідома зона далеко від бази.",     bonus: "+150 RP",                bonusType: "rp",           bonusValue: 150,open: false, unlocking: false, progress: 0, cost: 170, needs: "mineral_ridge",top: 2, left: 3 }
+    { id: "base_area",     name: "Периметр бази",     icon: "🏠", desc: "Вже досліджена.",                          bonus: "Стартова зона",           bonusType: null,           bonusValue: 0,   open: true,  unlocking: false, progress: 0, cost: 0,   needs: null,           top: 1, left: 1 },
+    { id: "crater_north",  name: "Північний кратер",  icon: "🌑", desc: "Поклади льоду під поверхнею.",             bonus: "+40 води одразу",         bonusType: "water",        bonusValue: 40,  open: false, unlocking: false, progress: 0, cost: 50,  needs: null,           top: 0, left: 1 },
+    { id: "lava_field",    name: "Лавове поле",        icon: "🌋", desc: "Мінерали для досліджень.",                 bonus: "+60 RP одразу",           bonusType: "rp",           bonusValue: 60,  open: false, unlocking: false, progress: 0, cost: 55,  needs: null,           top: 0, left: 2 },
+    { id: "dust_plain",    name: "Пилова рівнина",     icon: "🌪",  desc: "Відкрита рівнина — добре для панелей.",  bonus: "+20% генерації енергії",  bonusType: "energy_boost", bonusValue: 0,   open: false, unlocking: false, progress: 0, cost: 65,  needs: "lava_field",   top: 0, left: 3 },
+    { id: "canyon_west",   name: "Західний каньйон",   icon: "🏔",  desc: "Захищена ділянка від вітру.",            bonus: "+0.04 води/тік",          bonusType: "water_regen",  bonusValue: 0,   open: false, unlocking: false, progress: 0, cost: 60,  needs: "base_area",    top: 1, left: 0 },
+    { id: "ice_valley",    name: "Льодяна долина",     icon: "❄️", desc: "Шар льоду на глибині 2 м.",               bonus: "+0.06 води/тік",          bonusType: "water_regen",  bonusValue: 0,   open: false, unlocking: false, progress: 0, cost: 90,  needs: "crater_north", top: 1, left: 2 },
+    { id: "mineral_ridge", name: "Мінеральний хребет", icon: "💎", desc: "Рідкісні мінерали для науки.",            bonus: "+0.4 RP/тік",             bonusType: "rp_regen",     bonusValue: 0,   open: false, unlocking: false, progress: 0, cost: 80,  needs: "lava_field",   top: 1, left: 3 },
+    { id: "shelter_ruins", name: "Покинутий зонд",     icon: "🛸", desc: "Уламки марсохода з корисними деталями.",  bonus: "+90 RP одразу",           bonusType: "rp",           bonusValue: 90,  open: false, unlocking: false, progress: 0, cost: 75,  needs: "canyon_west",  top: 2, left: 0 },
+    { id: "south_plateau", name: "Південне плато",     icon: "🗻", desc: "Висока рівнина, менше пилу.",             bonus: "+30% RP від лабораторії", bonusType: "rp_lab_boost", bonusValue: 0,   open: false, unlocking: false, progress: 0, cost: 100, needs: "canyon_west",  top: 2, left: 1 },
+    { id: "deep_crater",   name: "Глибокий кратер",    icon: "🕳",  desc: "Найглибший кратер — повно кисню.",       bonus: "+50 кисню одразу",        bonusType: "oxygen",       bonusValue: 50,  open: false, unlocking: false, progress: 0, cost: 85,  needs: "crater_north", top: 2, left: 2 },
+    { id: "far_east",      name: "Далекий схід",       icon: "🌅", desc: "Невідома зона з аномальним сигналом.",    bonus: "+120 RP одразу",          bonusType: "rp",           bonusValue: 120, open: false, unlocking: false, progress: 0, cost: 110, needs: "mineral_ridge",top: 2, left: 3 }
   ],
 
   // стан рослини
@@ -172,9 +174,9 @@ const game = {
 
   // прапори цілей
   objectives: {
-    plant:  false,  // рослина виросла
-    survive: false, // Sol 20+
-    evac:   false   // евакуація виконана
+    plant:   false, // рослина виросла
+    survive: false, // Sol 5+
+    evac:    false  // евакуація виконана
   },
 
   // тип кінцівки
@@ -251,7 +253,7 @@ const resLabel  = { oxygen: "Кисень", water: "Вода", energy: "Енер
 const lvlNames  = ["","Базовий","Покращений","Розширений","Передовий","Елітний"];
 const upgCost   = lvl => lvl * 80;
 const EXPLORE_T = 40;
-const isNight   = () => game.hour >= 18 || game.hour < 6;
+const isNight = () => game.hour >= 5;
 
 let currentPage = "home";
 
@@ -293,7 +295,7 @@ const tickerLines = [
   "Температура поверхні: -42°C • Вітер: 18 м/с • Видимість: 4 км",
   "Ціль №1: виростити першу рослину на Марсі",
   "Рекомендація NASA: тримайте ресурси вище 30%",
-  "Ціль №2: протриматися 20 солів",
+  "Ціль №2: протриматися 5 солів",
   "Ціль №3: підготувати і виконати евакуацію екіпажу"
 ];
 let tickerIdx = 0;
@@ -385,7 +387,7 @@ function updatePins() {
 function tickTime() {
   game.min++;
   if (game.min >= 60) { game.min = 0; game.hour++; }
-  if (game.hour >= 25) {
+  if (game.hour >= 10) {
     game.hour = 0; game.sol++;
     el("solDisplay").textContent = game.sol;
     log(`Sol ${game.sol} розпочався.`, "ok");
@@ -427,8 +429,8 @@ function tickResources() {
     }
     if (mod.drain.water != null) {
       if (mod === game.modules.greenhouse) {
-        if (hydroOn || hasBuilding("greenhouse2")) {
-          r.water += (0.03 + (hasBuilding("greenhouse2") ? 0.04 : 0)) * (mod.level * 0.2 + 0.8);
+        if (hydroOn) {
+          r.water += 0.04 * (mod.level * 0.2 + 0.8);
         } else {
           let d = mod.drain.water * lvlMul;
           if (mod.crisis) d += crises[mod.crisis].extra.water || 0;
@@ -446,12 +448,11 @@ function tickResources() {
   const solar = game.modules.solar;
   if (!solar.crisis && !night) r.energy += 0.07 * (1 + (solar.level - 1) * 0.12) * solarMul * b.energyBoost;
   if (hasBuilding("battery") && night) r.energy += 0.04;
-  if (hasBuilding("recycler"))   r.water  += 0.05;
-  if (hasBuilding("ice_drill"))  r.water  += 0.10;
-  r.water  += b.waterRegen;
+  if (hasBuilding("recycler")) r.water  += 0.05;
+  if (hasBuilding("o2pump"))   r.oxygen += 0.03;
+  r.water += b.waterRegen;
 
-  if (hasTech("fusion"))      r.energy = Math.max(10, r.energy);
-  if (hasBuilding("reactor")) r.energy = Math.max(20, r.energy);
+  if (hasTech("fusion")) r.energy = Math.max(10, r.energy);
 
   const lab = game.modules.lab;
   if (!lab.crisis && lab.status !== "offline") {
@@ -521,7 +522,8 @@ function tickPlant() {
     return;
   }
 
-  p.stageProgress += 100 / cfg.duration;
+  const speedMul = hasBuilding("growlight") ? 2 : 1;
+  p.stageProgress += (100 / cfg.duration) * speedMul;
   if (p.stageProgress >= 100) {
     p.stageProgress = 100;
     p.growing = false;
@@ -751,7 +753,7 @@ function drawObjectives() {
   const obj = game.objectives;
   const items = [
     { done: obj.plant,   active: game.plant.stage > 0 && game.plant.stage < 5, text: "Виростити першу рослину на Марсі" },
-    { done: obj.survive, active: game.sol >= 10,                                text: `Протриматися 20 солів (Sol ${game.sol}/20)` },
+    { done: obj.survive, active: game.sol >= 2,                                text: `Протриматися 5 солів (Sol ${game.sol}/5)` },
     { done: obj.evac,    active: game.missions.find(m => m.evacStep && m.done), text: "Евакуювати екіпаж" }
   ];
 
@@ -767,7 +769,7 @@ function drawObjectives() {
 // кінцівки
 function checkEnding() {
   const { plant, survive, evac } = game.objectives;
-  survive || (game.objectives.survive = game.sol >= 20);
+  survive || (game.objectives.survive = game.sol >= 5);
 
   if (plant && evac && game.objectives.survive) {
     triggerEnding("full");
@@ -791,7 +793,7 @@ function triggerEnding(type) {
     full: {
       glyph: "🏆", title: "ПОВНА ПЕРЕМОГА",
       color: "#3ddc84",
-      text: "Рослина виросла. Екіпаж евакуйовано. 20 солів виживання.\nМісія ARES-7 увійде в підручники історії.\nМарс — наш новий дім."
+      text: "Рослина виросла. Екіпаж евакуйовано. 5 солів виживання.\nМісія ARES-7 увійде в підручники історії.\nМарс — наш новий дім."
     },
     bitter: {
       glyph: "🌱", title: "ГІРКО-СОЛОДКА ПЕРЕМОГА",
@@ -840,10 +842,10 @@ function checkDefeat() {
   }
   if (!crewAlive()) { triggerEnding("defeat"); return; }
   
-  if (game.sol >= 20 && !game.objectives.survive) {
+  if (game.sol >= 5 && !game.objectives.survive) {
     game.objectives.survive = true;
-    log("Ціль виконана: 20 солів виживання!", "upgrade");
-    showTicker("✓ 20 солів пережито! Друга ціль досягнута.");
+    log("Ціль виконана: 5 солів виживання!", "upgrade");
+    showTicker("✓ 5 солів пережито! Друга ціль досягнута.");
     checkEnding();
   }
 }
@@ -1077,7 +1079,7 @@ document.querySelectorAll(".pin").forEach(pin => {
 function restart() {
   game.sol = 1; game.rp = 0;
   game.over = false; game.ending = null; game.paused = false;
-  game.hour = 14; game.min = 37;
+  game.hour = 6; game.min = 0;
   Object.assign(game.res, { oxygen: 78, water: 54, energy: 63 });
   Object.values(game.modules).forEach(m => { m.status = "ok"; m.level = 1; m.crisis = null; });
   Object.values(game.buildings).forEach(b => { b.built = false; });
