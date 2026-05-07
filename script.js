@@ -1,10 +1,14 @@
 const el = id => document.getElementById(id);
 
-// ─── Intro screen ────────────────────────────────────────────────────────────
 
 function buildIntro() {
-  const existing = document.getElementById("introScreen");
-  if (existing) existing.remove();
+  const screen = document.createElement("div");
+  screen.id = "introScreen";
+  screen.style.cssText = `
+    position:fixed;inset:0;background:#0d0704;z-index:9998;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Share Tech Mono',monospace;
+  `;
 
   const slides = [
     {
@@ -31,88 +35,53 @@ function buildIntro() {
 
   let idx = 0;
 
-  const screen = document.createElement("div");
-  screen.id = "introScreen";
-  screen.style.cssText = `
-    position:fixed;inset:0;background:#0d0704;z-index:9998;
-    display:flex;align-items:center;justify-content:center;
-    font-family:'Share Tech Mono',monospace;
-  `;
-
-  const scanline = document.createElement("div");
-  scanline.style.cssText = `
-    position:absolute;inset:0;pointer-events:none;
-    background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.08) 2px,rgba(0,0,0,0.08) 4px);
-  `;
-  screen.appendChild(scanline);
-
   const box = document.createElement("div");
   box.style.cssText = `
-    position:relative;z-index:2;max-width:520px;width:90%;
-    background:rgba(22,11,6,0.98);border:1px solid #e85d04;
-    padding:36px 44px;text-align:center;
+    max-width:520px;width:90%;
+    background:rgba(22,11,6,0.98);
+    border:1px solid #e85d04;
+    padding:40px 44px;
     clip-path:polygon(0 0,calc(100% - 24px) 0,100% 24px,100% 100%,24px 100%,0 calc(100% - 24px));
+    text-align:center;
   `;
-
-  const badge = document.createElement("div");
-  badge.style.cssText = "display:inline-block;font-size:10px;letter-spacing:3px;color:#e85d04;border:1px solid rgba(232,93,4,0.4);padding:3px 12px;margin-bottom:14px;";
-  badge.textContent = "ARES-7 // BRIEFING";
-
-  const iconEl = document.createElement("div");
-  iconEl.style.cssText = "font-size:44px;margin-bottom:14px;line-height:1;";
-
-  const titleEl = document.createElement("div");
-  titleEl.style.cssText = "font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:3px;color:#ffb347;text-transform:uppercase;margin-bottom:16px;";
-
-  const textEl = document.createElement("div");
-  textEl.style.cssText = "font-size:12px;color:#8a5c44;line-height:1.9;white-space:pre-line;margin-bottom:24px;text-align:left;";
-
-  const dotsEl = document.createElement("div");
-  dotsEl.style.cssText = "display:flex;justify-content:center;gap:6px;margin-bottom:22px;";
-
-  const btn = document.createElement("button");
-  btn.style.cssText = `
-    padding:11px 32px;background:rgba(232,93,4,0.2);border:1px solid #e85d04;
-    color:#f0cdb8;font-family:'Rajdhani',sans-serif;font-size:13px;
-    font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;
-    clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);
-  `;
-
-  btn.addEventListener("mouseover", () => { btn.style.background = "rgba(232,93,4,0.45)"; btn.style.color = "#fff"; });
-  btn.addEventListener("mouseout",  () => { btn.style.background = "rgba(232,93,4,0.2)";  btn.style.color = "#f0cdb8"; });
-
-  btn.addEventListener("click", () => {
-    if (idx < slides.length - 1) { idx++; render(); }
-    else { screen.remove(); }
-  });
-
-  box.appendChild(badge);
-  box.appendChild(iconEl);
-  box.appendChild(titleEl);
-  box.appendChild(textEl);
-  box.appendChild(dotsEl);
-  box.appendChild(btn);
-
-  screen.appendChild(box);
-  document.body.appendChild(screen);
 
   function render() {
     const s = slides[idx];
-    iconEl.textContent  = s.icon;
-    titleEl.textContent = s.title;
-    textEl.textContent  = s.text;
-    btn.textContent     = idx < slides.length - 1 ? "ДАЛІ →" : "▶ РОЗПОЧАТИ МІСІЮ";
-
-    dotsEl.innerHTML = slides.map((_, i) =>
-      `<div style="height:3px;width:${i === idx ? 28 : 18}px;background:${i === idx ? "#e85d04" : "#3a1a0a"};transition:all 0.3s;"></div>`
-    ).join("");
+    box.innerHTML = `
+      <div style="font-size:44px;margin-bottom:16px">${s.icon}</div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;
+                  letter-spacing:3px;color:#ffb347;text-transform:uppercase;margin-bottom:18px">
+        ${s.title}
+      </div>
+      <div style="font-size:12px;color:#8a5c44;line-height:1.9;white-space:pre-line;margin-bottom:28px">
+        ${s.text}
+      </div>
+      <div style="display:flex;justify-content:center;gap:6px;margin-bottom:24px">
+        ${slides.map((_, i) => `
+          <div style="width:28px;height:3px;background:${i === idx ? "#e85d04" : "#3a1a0a"}"></div>
+        `).join("")}
+      </div>
+      <button data-intro-btn style="
+        padding:12px 36px;
+        background:rgba(232,93,4,0.2);border:1px solid #e85d04;
+        color:#f0cdb8;font-family:'Rajdhani',sans-serif;font-size:14px;
+        font-weight:700;letter-spacing:3px;text-transform:uppercase;
+        cursor:pointer;
+        clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);
+      ">
+        ${idx < slides.length - 1 ? "ДАЛІ →" : "РОЗПОЧАТИ МІСІЮ"}
+      </button>
+    `;
   }
 
-  render();
+  // delegate click instead of re-binding each render
+  box.addEventListener("click", e => {
+    if (!e.target.dataset.introBtn) return;
+    if (idx < slides.length - 1) { idx++; render(); }
+    else { screen.remove(); }
+  });
 }
 
-
-// ─── Game state ───────────────────────────────────────────────────────────────
 
 const game = {
   sol: 1, rp: 0,
@@ -140,47 +109,48 @@ const game = {
   },
 
   missions: [
-    { id: "survey",  name: "Розвідка кратера",   icon: "🗺️", desc: "Вивчити рельєф на схід від бази.",    time: 25,  reward: 70,  type: "rp",     done: false, active: false, progress: 0, needs: null,      rpCost: 0 },
-    { id: "sample",  name: "Збір ґрунту",         icon: "🧪", desc: "Зібрати п'ять зразків реголіту.",     time: 18,  reward: 50,  type: "rp",     done: false, active: false, progress: 0, needs: null,      rpCost: 0 },
-    { id: "repair",  name: "Ремонт труби",         icon: "🔩", desc: "Замінити зовнішній водяний клапан.",  time: 12,  reward: 22,  type: "water",  done: false, active: false, progress: 0, needs: null,      rpCost: 0 },
-    { id: "rover",   name: "Рейд на ровері",       icon: "🚗", desc: "Доїхати до аномалії за три км.",     time: 40,  reward: 120, type: "rp",     done: false, active: false, progress: 0, needs: "garage",  rpCost: 0 },
-    { id: "meteor",  name: "Аналіз метеорита",     icon: "☄️", desc: "Дослідити уламки поблизу бази.",     time: 35,  reward: 90,  type: "rp",     done: false, active: false, progress: 0, needs: null,      rpCost: 0 },
-    { id: "oxygen2", name: "Запуск генератора O₂", icon: "💨", desc: "Увімкнути резервний кисневий блок.", time: 20,  reward: 25,  type: "oxygen", done: false, active: false, progress: 0, needs: "medlab",  rpCost: 0 },
-    // ── Евакуаційні місії ──────────────────────────────────────────────────────
-    { id: "evac1",   name: "Сигнал евакуації",     icon: "📡", desc: "Надіслати сигнал SOS на Землю. Земля має отримати і підтвердити сигнал — це займає час.",          time: 60,  reward: 80,  type: "rp", done: false, active: false, progress: 0, needs: "antenna", rpCost: 0,   evacStep: 1 },
-    { id: "evac2",   name: "Підготовка капсули",   icon: "🚀", desc: "Повна технічна перевірка евакуаційної капсули, заправка і тест двигунів.",                         time: 80,  reward: 60,  type: "rp", done: false, active: false, progress: 0, needs: "garage",  rpCost: 0,   evacStep: 2 },
-    { id: "evac3",   name: "Евакуація екіпажу",    icon: "🛸", desc: "Посадка і запуск капсули. Операція вимагає значних ресурсів і повної готовності екіпажу.",          time: 120, reward: 0,   type: "rp", done: false, active: false, progress: 0, needs: null,     rpCost: 300, evacStep: 3, needsEvac: true }
+    { id: "survey",  name: "Розвідка кратера",   icon: "🗺️", desc: "Вивчити рельєф на схід від бази.",    time: 25, reward: 70,  type: "rp",     done: false, active: false, progress: 0, needs: null },
+    { id: "sample",  name: "Збір ґрунту",         icon: "🧪", desc: "Зібрати п'ять зразків реголіту.",     time: 18, reward: 50,  type: "rp",     done: false, active: false, progress: 0, needs: null },
+    { id: "repair",  name: "Ремонт труби",         icon: "🔩", desc: "Замінити зовнішній водяний клапан.",  time: 12, reward: 22,  type: "water",  done: false, active: false, progress: 0, needs: null },
+    { id: "rover",   name: "Рейд на ровері",       icon: "🚗", desc: "Доїхати до аномалії за три км.",     time: 40, reward: 120, type: "rp",     done: false, active: false, progress: 0, needs: "garage" },
+    { id: "meteor",  name: "Аналіз метеорита",     icon: "☄️", desc: "Дослідити уламки поблизу бази.",     time: 35, reward: 90,  type: "rp",     done: false, active: false, progress: 0, needs: null },
+    { id: "oxygen2", name: "Запуск генератора O₂", icon: "💨", desc: "Увімкнути резервний кисневий блок.", time: 20, reward: 25,  type: "oxygen", done: false, active: false, progress: 0, needs: "medlab" },
+    // evac missions
+    { id: "evac1",   name: "Сигнал евакуації",     icon: "📡", desc: "Надіслати сигнал SOS на Землю.",     time: 30, reward: 60,  type: "rp",     done: false, active: false, progress: 0, needs: "antenna", evacStep: 1 },
+    { id: "evac2",   name: "Підготовка капсули",   icon: "🚀", desc: "Перевірити евакуаційну капсулу.",    time: 35, reward: 40,  type: "rp",     done: false, active: false, progress: 0, needs: "garage",  evacStep: 2 },
+    { id: "evac3",   name: "Евакуація екіпажу",    icon: "🛸", desc: "Посадка і запуск капсули.",          time: 45, reward: 0,   type: "rp",     done: false, active: false, progress: 0, needs: null,     evacStep: 3, needsEvac: true }
   ],
 
   tech: [
-    { id: "atmo",     tier: 1, name: "Атмосферний фільтр",  icon: "💨", desc: "Кисень -15% витрат",               cost: 70,  done: false, needs: [] },
-    { id: "hydro",    tier: 1, name: "Гідропоніка",         icon: "🌱", desc: "Оранжерея виробляє воду",          cost: 70,  done: false, needs: [] },
-    { id: "solar2",   tier: 1, name: "Покращені батареї",   icon: "⚡", desc: "Панелі +20% генерації",            cost: 80,  done: false, needs: [] },
-    { id: "biotech",  tier: 1, name: "Марсіанська біологія",icon: "🔬", desc: "Розблоковує етап «Насіння»",       cost: 90,  done: false, needs: [] },
-    { id: "medsuit",  tier: 2, name: "Захисний костюм",     icon: "🧑‍🚀", desc: "Здоров'я екіпажу -50% втрат", cost: 110, done: false, needs: ["atmo"] },
-    { id: "ai",       tier: 2, name: "ШІ-асистент",         icon: "🤖", desc: "Лабораторія +30% RP",             cost: 130, done: false, needs: ["hydro","solar2"] },
-    { id: "growtech", tier: 2, name: "Технологія росту",    icon: "🌿", desc: "Розблоковує етап «Ріст»",         cost: 120, done: false, needs: ["biotech","hydro"] },
-    { id: "fusion",   tier: 3, name: "Мікрореактор",        icon: "⚛️", desc: "Енергія не падає нижче 10%",      cost: 220, done: false, needs: ["ai"] }
+    { id: "atmo",     tier: 1, name: "Атмосферний фільтр", icon: "💨", desc: "Кисень -15% витрат",               cost: 70,  done: false, needs: [] },
+    { id: "hydro",    tier: 1, name: "Гідропоніка",        icon: "🌱", desc: "Оранжерея виробляє воду",          cost: 70,  done: false, needs: [] },
+    { id: "solar2",   tier: 1, name: "Покращені батареї",  icon: "⚡", desc: "Панелі +20% генерації",            cost: 80,  done: false, needs: [] },
+    { id: "biotech",  tier: 1, name: "Марсіанська біологія",icon: "🔬", desc: "Розблоковує етап «Насіння»",     cost: 90,  done: false, needs: [] },
+    { id: "medsuit",  tier: 2, name: "Захисний костюм",    icon: "🧑‍🚀", desc: "Здоров'я екіпажу -50% втрат",  cost: 110, done: false, needs: ["atmo"] },
+    { id: "ai",       tier: 2, name: "ШІ-асистент",        icon: "🤖", desc: "Лабораторія +30% RP",             cost: 130, done: false, needs: ["hydro","solar2"] },
+    { id: "growtech", tier: 2, name: "Технологія росту",   icon: "🌿", desc: "Розблоковує етап «Ріст»",         cost: 120, done: false, needs: ["biotech","hydro"] },
+    { id: "fusion",   tier: 3, name: "Мікрореактор",       icon: "⚛️", desc: "Енергія не падає нижче 10%",      cost: 220, done: false, needs: ["ai"] }
   ],
 
   zones: [
-    { id: "base_area",     name: "Периметр бази",     icon: "🏠", desc: "Вже досліджена.",                     bonus: "Стартова зона",          bonusType: null,           bonusValue: 0,   open: true,  unlocking: false, progress: 0, cost: 0,   needs: null,           top: 1, left: 1 },
-    { id: "crater_north",  name: "Північний кратер",  icon: "🌑", desc: "Поклади льоду.",                      bonus: "Розблоковує Льодобур",   bonusType: "unlock_b",     bonusValue: 0,   open: false, unlocking: false, progress: 0, cost: 50,  needs: null,           top: 0, left: 1 },
-    { id: "lava_field",    name: "Лавове поле",        icon: "🌋", desc: "Мінерали для досліджень.",            bonus: "+50 RP",                 bonusType: "rp",           bonusValue: 50,  open: false, unlocking: false, progress: 0, cost: 60,  needs: null,           top: 0, left: 2 },
-    { id: "dust_plain",    name: "Пилова рівнина",     icon: "🌪",  desc: "Ідеальне місце для панелей.",        bonus: "+15% енергії",           bonusType: "energy_boost", bonusValue: 0,   open: false, unlocking: false, progress: 0, cost: 70,  needs: "lava_field",   top: 0, left: 3 },
-    { id: "canyon_west",   name: "Західний каньйон",   icon: "🏔",  desc: "Відклади мінералів.",               bonus: "+30 води",               bonusType: "water",        bonusValue: 30,  open: false, unlocking: false, progress: 0, cost: 75,  needs: "base_area",    top: 1, left: 0 },
-    { id: "ice_valley",    name: "Льодяна долина",     icon: "❄️", desc: "Підземний лід.",                     bonus: "+0.05 води/тік",         bonusType: "water_regen",  bonusValue: 0,   open: false, unlocking: false, progress: 0, cost: 100, needs: "crater_north", top: 1, left: 2 },
-    { id: "mineral_ridge", name: "Мінеральний хребет", icon: "💎", desc: "Унікальні мінерали.",                bonus: "+0.3 RP/тік",            bonusType: "rp_regen",     bonusValue: 0,   open: false, unlocking: false, progress: 0, cost: 85,  needs: "lava_field",   top: 1, left: 3 },
-    { id: "shelter_ruins", name: "Покинутий зонд",     icon: "🛸", desc: "Уламки старого марсохода NASA.",     bonus: "+80 RP",                 bonusType: "rp",           bonusValue: 80,  open: false, unlocking: false, progress: 0, cost: 90,  needs: "canyon_west",  top: 2, left: 0 },
-    { id: "south_plateau", name: "Південне плато",     icon: "🗻", desc: "Рівнина для панелей.",               bonus: "+25% RP від лабораторії",bonusType: "rp_lab_boost", bonusValue: 0,   open: false, unlocking: false, progress: 0, cost: 120, needs: "canyon_west",  top: 2, left: 1 },
-    { id: "deep_crater",   name: "Глибокий кратер",    icon: "🕳",  desc: "Найглибший кратер.",                bonus: "+60 кисню",              bonusType: "oxygen",       bonusValue: 60,  open: false, unlocking: false, progress: 0, cost: 110, needs: "crater_north", top: 2, left: 2 },
-    { id: "far_east",      name: "Далекий схід",       icon: "🌅", desc: "Невідома зона далеко від бази.",     bonus: "+150 RP",                bonusType: "rp",           bonusValue: 150, open: false, unlocking: false, progress: 0, cost: 170, needs: "mineral_ridge",top: 2, left: 3 }
+    { id: "base_area",     name: "Периметр бази",     icon: "🏠", desc: "Вже досліджена.",                     bonus: "Стартова зона",          bonusType: null,           bonusValue: 0,  open: true,  unlocking: false, progress: 0, cost: 0,   needs: null,          top: 1, left: 1 },
+    { id: "crater_north",  name: "Північний кратер",  icon: "🌑", desc: "Поклади льоду.",                      bonus: "Розблоковує Льодобур",   bonusType: "unlock_b",     bonusValue: 0,  open: false, unlocking: false, progress: 0, cost: 50,  needs: null,          top: 0, left: 1 },
+    { id: "lava_field",    name: "Лавове поле",        icon: "🌋", desc: "Мінерали для досліджень.",            bonus: "+50 RP",                 bonusType: "rp",           bonusValue: 50, open: false, unlocking: false, progress: 0, cost: 60,  needs: null,          top: 0, left: 2 },
+    { id: "dust_plain",    name: "Пилова рівнина",     icon: "🌪",  desc: "Ідеальне місце для панелей.",        bonus: "+15% енергії",           bonusType: "energy_boost", bonusValue: 0,  open: false, unlocking: false, progress: 0, cost: 70,  needs: "lava_field",  top: 0, left: 3 },
+    { id: "canyon_west",   name: "Західний каньйон",   icon: "🏔",  desc: "Відклади мінералів.",               bonus: "+30 води",               bonusType: "water",        bonusValue: 30, open: false, unlocking: false, progress: 0, cost: 75,  needs: "base_area",   top: 1, left: 0 },
+    { id: "ice_valley",    name: "Льодяна долина",     icon: "❄️", desc: "Підземний лід.",                     bonus: "+0.05 води/тік",         bonusType: "water_regen",  bonusValue: 0,  open: false, unlocking: false, progress: 0, cost: 100, needs: "crater_north",top: 1, left: 2 },
+    { id: "mineral_ridge", name: "Мінеральний хребет", icon: "💎", desc: "Унікальні мінерали.",                bonus: "+0.3 RP/тік",            bonusType: "rp_regen",     bonusValue: 0,  open: false, unlocking: false, progress: 0, cost: 85,  needs: "lava_field",  top: 1, left: 3 },
+    { id: "shelter_ruins", name: "Покинутий зонд",     icon: "🛸", desc: "Уламки старого марсохода NASA.",     bonus: "+80 RP",                 bonusType: "rp",           bonusValue: 80, open: false, unlocking: false, progress: 0, cost: 90,  needs: "canyon_west", top: 2, left: 0 },
+    { id: "south_plateau", name: "Південне плато",     icon: "🗻", desc: "Рівнина для панелей.",               bonus: "+25% RP від лабораторії",bonusType: "rp_lab_boost", bonusValue: 0,  open: false, unlocking: false, progress: 0, cost: 120, needs: "canyon_west", top: 2, left: 1 },
+    { id: "deep_crater",   name: "Глибокий кратер",    icon: "🕳",  desc: "Найглибший кратер.",                bonus: "+60 кисню",              bonusType: "oxygen",       bonusValue: 60, open: false, unlocking: false, progress: 0, cost: 110, needs: "crater_north",top: 2, left: 2 },
+    { id: "far_east",      name: "Далекий схід",       icon: "🌅", desc: "Невідома зона далеко від бази.",     bonus: "+150 RP",                bonusType: "rp",           bonusValue: 150,open: false, unlocking: false, progress: 0, cost: 170, needs: "mineral_ridge",top: 2, left: 3 }
   ],
 
+  // plant data
   plant: {
-    stage: 0,
-    stageProgress: 0,
-    growing: false
+    stage: 0,          // 0=не розпочато, 1..4=активний/зроблений, 5=завершено
+    stageProgress: 0,  // прогрес поточного етапу (0..100)
+    growing: false     // чи зараз росте
   },
 
   crew: [
@@ -199,17 +169,18 @@ const game = {
 
   tradeAvailable: false, tradeNextSol: 6, tradeOffer: null,
 
+  // objective flags
   objectives: {
-    plant:   false,
-    survive: false,
-    evac:    false
+    plant:  false,  // рослина виросла
+    survive: false, // Sol 20+
+    evac:   false   // евакуація виконана
   },
 
+  // ending type
   ending: null
 };
 
-// ─── Plant stages ─────────────────────────────────────────────────────────────
-
+// plant stages config
 const PLANT_STAGES = [
   {
     num: 1, name: "Підготовка ґрунту", icon: "🪨",
@@ -283,9 +254,7 @@ const isNight   = () => game.hour >= 18 || game.hour < 6;
 
 let currentPage = "home";
 
-
-// ─── Navigation ───────────────────────────────────────────────────────────────
-
+// --- nav
 function goTo(page) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.querySelectorAll("nav a").forEach(a => a.classList.remove("active"));
@@ -317,9 +286,7 @@ document.querySelectorAll("nav a[data-page]").forEach(link => {
   link.addEventListener("click", e => { e.preventDefault(); goTo(link.dataset.page); });
 });
 
-
-// ─── Ticker ───────────────────────────────────────────────────────────────────
-
+// --- ticker
 const tickerLines = [
   "Зв'язок із Землею: затримка 20 хв • Всі системи в автономному режимі",
   "Температура поверхні: -42°C • Вітер: 18 м/с • Видимість: 4 км",
@@ -335,9 +302,7 @@ function showTicker(text) {
   setTimeout(() => { tickerIdx = (tickerIdx + 1) % tickerLines.length; showTicker(tickerLines[tickerIdx]); }, 15000);
 }
 
-
-// ─── Log ──────────────────────────────────────────────────────────────────────
-
+// --- log
 const pad = n => String(n).padStart(2, "0");
 
 function log(text, type = "") {
@@ -349,9 +314,7 @@ function log(text, type = "") {
   while (el("eventLog").children.length > 35) el("eventLog").lastChild.remove();
 }
 
-
-// ─── Resources ────────────────────────────────────────────────────────────────
-
+// --- render resources panel
 function drawResources() {
   el("resourceBars").innerHTML = [
     { key: "oxygen", label: "Кисень"  },
@@ -385,9 +348,7 @@ function emergencyRefill(key) {
   drawResources();
 }
 
-
-// ─── Module list ──────────────────────────────────────────────────────────────
-
+// --- module list in right panel
 function drawModuleList() {
   el("moduleList").innerHTML = Object.entries(game.modules).map(([key, mod]) => {
     const text = mod.crisis ? "⚠ КРИЗА" : "Норма";
@@ -401,9 +362,7 @@ function drawModuleList() {
   }).join("");
 }
 
-
-// ─── Pins ─────────────────────────────────────────────────────────────────────
-
+// --- map pins
 function updatePins() {
   Object.entries(game.modules).forEach(([key, mod]) => {
     const dot   = el(`pin-${key}`);
@@ -421,9 +380,7 @@ function updatePins() {
   } else if (badge) badge.remove();
 }
 
-
-// ─── Clock ────────────────────────────────────────────────────────────────────
-
+// --- clock
 function tickTime() {
   game.min++;
   if (game.min >= 60) { game.min = 0; game.hour++; }
@@ -446,9 +403,7 @@ function onNewSol() {
   game._dailyUpgraded = 0; game._dailyZoneOpened = 0;
 }
 
-
-// ─── Resources tick ───────────────────────────────────────────────────────────
-
+// --- resource drain per tick
 function tickResources() {
   const r = game.res;
   const b = game.zoneBonuses;
@@ -509,9 +464,7 @@ function tickResources() {
 const hasTech     = id => game.tech.find(t => t.id === id)?.done;
 const hasBuilding = id => game.buildings[id]?.built;
 
-
-// ─── Crises ───────────────────────────────────────────────────────────────────
-
+// --- random crises
 function maybeTriggerCrisis() {
   const chance = 0.005 + game.sol * 0.00015;
   if (Math.random() > chance) return;
@@ -525,9 +478,7 @@ function maybeTriggerCrisis() {
   showTicker(`⚠ ${crises[type].label} у "${mod.name}". Клікни на піні!`);
 }
 
-
-// ─── Missions ─────────────────────────────────────────────────────────────────
-
+// --- missions
 function tickMissions() {
   game.missions.forEach(m => {
     if (!m.active || m.done) return;
@@ -555,16 +506,16 @@ function finishMission(m) {
   }
 }
 
-
-// ─── Plant ────────────────────────────────────────────────────────────────────
-
+// --- plant page
 function tickPlant() {
   const p = game.plant;
   if (!p.growing || p.stage === 0 || p.stage > 4) return;
 
   const cfg = PLANT_STAGES[p.stage - 1];
 
+  // stop growing if conditions break
   if (!cfg.requires()) {
+    // умови порушено — ріст зупиняється, але не скидається
     if (currentPage === "plant") drawPlant();
     return;
   }
@@ -581,6 +532,7 @@ function tickPlant() {
       showTicker("🌱 НЕМОЖЛИВЕ СТАЛО МОЖЛИВИМ — перша рослина на Марсі!");
       checkEnding();
     } else {
+      // move to next stage
       setTimeout(() => {
         if (!game.over) { p.stage++; p.stageProgress = 0; }
         if (currentPage === "plant") drawPlant();
@@ -665,9 +617,7 @@ function drawPlant() {
     </div>`;
 }
 
-
-// ─── Explore ──────────────────────────────────────────────────────────────────
-
+// --- explore map
 function tickExplore() {
   game.zones.forEach(zone => {
     if (!zone.unlocking || zone.open) return;
@@ -747,9 +697,7 @@ function drawExplore() {
   }).join("");
 }
 
-
-// ─── Daily tasks ──────────────────────────────────────────────────────────────
-
+// --- daily tasks
 function generateDailyTasks() {
   game.dailyTasks = [...DAILY_POOL].sort(() => Math.random() - 0.5)
     .slice(0, 3).map(t => ({ ...t, claimed: false }));
@@ -767,9 +715,7 @@ function claimDailyTask(idx) {
   drawMissions();
 }
 
-
-// ─── Trade ────────────────────────────────────────────────────────────────────
-
+// --- earth trade
 function checkTradeArrival() {
   if (game.sol >= game.tradeNextSol) {
     game.tradeAvailable = true;
@@ -799,9 +745,7 @@ function declineTrade() {
   drawMissions();
 }
 
-
-// ─── Objectives panel ─────────────────────────────────────────────────────────
-
+// --- objectives
 function drawObjectives() {
   const obj = game.objectives;
   const items = [
@@ -819,9 +763,7 @@ function drawObjectives() {
     </div>`).join("");
 }
 
-
-// ─── Endings ─────────────────────────────────────────────────────────────────
-
+// --- endings
 function checkEnding() {
   const { plant, survive, evac } = game.objectives;
   survive || (game.objectives.survive = game.sol >= 20);
@@ -863,7 +805,7 @@ function triggerEnding(type) {
     defeat: {
       glyph: "☠", title: "МІСІЯ ПРОВАЛЕНА",
       color: "#ff3d3d",
-      text: "Ресурси вичерпано. Зв'язок втрачено.\nЕкіпаж не вижив."
+      text: "Ресурси вичерпано. Зв'язок втрачено.\nEкіпаж не вижив."
     }
   };
 
@@ -877,9 +819,7 @@ function triggerEnding(type) {
   el("gameOverScreen").classList.remove("hidden");
 }
 
-
-// ─── Daily crew tick ──────────────────────────────────────────────────────────
-
+// --- crew daily update
 function dailyCrewTick() {
   const medlab = hasBuilding("medlab");
   const suit   = hasTech("medsuit");
@@ -891,15 +831,14 @@ function dailyCrewTick() {
   if (currentPage === "crew") drawCrew();
 }
 
-
-// ─── Check defeat ─────────────────────────────────────────────────────────────
-
+// --- defeat check
 function checkDefeat() {
   if (game.over) return;
   for (const [key, val] of Object.entries(game.res)) {
     if (val <= 0) { triggerEnding("defeat"); return; }
   }
   if (!crewAlive()) { triggerEnding("defeat"); return; }
+  // sol 20 survival check
   if (game.sol >= 20 && !game.objectives.survive) {
     game.objectives.survive = true;
     log("Ціль виконана: 20 солів виживання!", "upgrade");
@@ -908,9 +847,7 @@ function checkDefeat() {
   }
 }
 
-
-// ─── Buildings ───────────────────────────────────────────────────────────────
-
+// --- buildings page
 function drawBuildings() {
   el("buildingsGrid").innerHTML = Object.entries(game.buildings).map(([key, b]) => {
     const zoneOk = !b.needs || game.zones.find(z => z.id === b.needs)?.open;
@@ -943,54 +880,29 @@ function build(key) {
   drawBuildings();
 }
 
-
-// ─── Missions ─────────────────────────────────────────────────────────────────
-
+// --- missions
 function drawMissions() {
   const evac1Done = game.missions.find(m => m.evacStep === 1)?.done;
   const evac2Done = game.missions.find(m => m.evacStep === 2)?.done;
 
   const mCards = game.missions.map(m => {
-    const reqOk = !m.needs || (m.evacStep === 3
-      ? (evac1Done && evac2Done)
-      : game.buildings[m.needs]?.built);
-
-    const notEnoughRp = m.rpCost > 0 && game.rp < m.rpCost && !m.done && !m.active && reqOk;
+    const reqOk = !m.needs || (m.evacStep === 3 ? (evac1Done && evac2Done) : game.buildings[m.needs]?.built);
     const pct   = Math.round((m.progress / m.time) * 100);
-    const prize = m.type === "rp"
-      ? (m.reward > 0 ? `+${m.reward} RP` : "Евакуація")
-      : `+${m.reward} ${resLabel[m.type]}`;
-
+    const prize = m.type === "rp" ? `+${m.reward} RP` : m.reward > 0 ? `+${m.reward} ${resLabel[m.type]}` : "Евакуація";
     let btnTxt, btnCls, disabled;
-
-    if (m.done) {
-      btnTxt = "✓ Виконано"; btnCls = "is-built"; disabled = true;
-    } else if (m.active) {
-      btnTxt = `${m.time - m.progress}с…`; btnCls = "in-progress"; disabled = true;
-    } else if (!reqOk) {
-      btnTxt = m.evacStep === 3
-        ? "Спочатку виконай evac 1 і 2"
-        : `Потрібно: ${game.buildings[m.needs]?.name}`;
-      btnCls = ""; disabled = true;
-    } else if (notEnoughRp) {
-      btnTxt = `Потрібно ${m.rpCost} RP`; btnCls = ""; disabled = true;
-    } else {
-      btnTxt = m.rpCost > 0 ? `Розпочати — ${m.rpCost} RP` : "Розпочати";
-      btnCls = ""; disabled = false;
-    }
-
+    if (m.done)        { btnTxt = "✓ Виконано";        btnCls = "is-built";    disabled = true; }
+    else if (m.active) { btnTxt = `${m.time-m.progress}с…`; btnCls = "in-progress"; disabled = true; }
+    else if (!reqOk)   { btnTxt = m.evacStep === 3 ? "Спочатку evac 1 і 2" : `Потрібно: ${game.buildings[m.needs]?.name}`; btnCls = ""; disabled = true; }
+    else               { btnTxt = "Розпочати";          btnCls = "";            disabled = false; }
     const isEvac = !!m.evacStep;
-
     return `
       <div class="card" ${isEvac ? 'style="border-color:rgba(74,179,255,0.4)"' : ""}>
         <div class="card-icon">${m.icon}</div>
         <div class="card-title" ${isEvac ? 'style="color:#4ab3ff"' : ""}>${m.name}</div>
         <div class="card-desc">${m.desc}</div>
         <div class="mission-reward">${prize}</div>
-        ${m.rpCost > 0 && !m.done && !m.active ? `<div class="card-cost" style="color:#ff8877">Вартість запуску: ${m.rpCost} RP</div>` : ""}
         ${m.active ? `<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>` : ""}
         <button class="card-btn ${btnCls}" onclick="startMission('${m.id}')" ${disabled ? "disabled" : ""}>${btnTxt}</button>
-        ${notEnoughRp ? `<p class="hint">Є ${Math.floor(game.rp)} RP — не вистачає ${m.rpCost - Math.floor(game.rp)} RP</p>` : ""}
       </div>`;
   }).join("");
 
@@ -1025,28 +937,13 @@ function drawMissions() {
 function startMission(id) {
   const m = game.missions.find(x => x.id === id);
   if (!m || m.active || m.done) return;
-
-  // Перевірка оплати для евакуації екіпажу
-  if (m.rpCost > 0) {
-    if (game.rp < m.rpCost) {
-      log(`Недостатньо RP для "${m.name}". Потрібно ${m.rpCost} RP.`, "warning");
-      drawMissions();
-      return;
-    }
-    game.rp -= m.rpCost;
-    el("rpDisplay").textContent = Math.floor(game.rp);
-    log(`Витрачено ${m.rpCost} RP на запуск "${m.name}".`, "warning");
-  }
-
   m.active = true; m.progress = 0;
   game._dailyMissionStarted++;
   log(`Місія розпочата: ${m.name}`, "warning");
   drawMissions();
 }
 
-
-// ─── Research ─────────────────────────────────────────────────────────────────
-
+// --- research tree
 function drawResearch() {
   el("researchTree").innerHTML = [1, 2, 3].map(tier => `
     <div>
@@ -1084,9 +981,7 @@ function research(id) {
   drawResearch();
 }
 
-
-// ─── Crew ─────────────────────────────────────────────────────────────────────
-
+// --- crew page
 function drawCrew() {
   el("crewGrid").innerHTML = game.crew.map(c => {
     const hCol = c.health < 30 ? "#ff3d3d" : c.health < 60 ? "#ffb347" : "#e85d04";
@@ -1113,9 +1008,7 @@ function drawCrew() {
   }).join("");
 }
 
-
-// ─── Module modal ─────────────────────────────────────────────────────────────
-
+// --- module modal
 function openModule(key) {
   const mod = game.modules[key];
   if (!mod) return;
@@ -1177,9 +1070,7 @@ document.querySelectorAll(".pin").forEach(pin => {
   });
 });
 
-
-// ─── Restart ──────────────────────────────────────────────────────────────────
-
+// --- restart
 function restart() {
   game.sol = 1; game.rp = 0;
   game.over = false; game.ending = null; game.paused = false;
@@ -1212,9 +1103,7 @@ function restart() {
 
 el("restartBtn").addEventListener("click", restart);
 
-
-// ─── Main loop ────────────────────────────────────────────────────────────────
-
+// 1 tick = 1 real sec = 1 mars minute
 function loop() {
   if (game.over || game.paused) return;
   tickTime();
@@ -1230,8 +1119,6 @@ function loop() {
   drawObjectives();
 }
 
-
-// ─── Boot ─────────────────────────────────────────────────────────────────────
 
 document.addEventListener("DOMContentLoaded", () => {
   game.plant.stage = 1;
