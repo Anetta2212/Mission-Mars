@@ -1,6 +1,12 @@
+// ============================
+// ARES-7 — Hellas Planitia
+// Марсіанський симулятор виживання
+// ============================
+
+// Скорочення для getElementById
 const q = (id) => document.getElementById(id);
 
-// вступ
+// Вступні слайди при запуску
 function intro() {
   const scr = document.createElement('div');
   scr.id = 'isc';
@@ -52,19 +58,19 @@ function intro() {
   document.body.appendChild(scr);
 }
 
-
-// ============================ Глобальний стан гри ============================
-
+// ============================
+// Глобальний стан гри (G)
+// ============================
 const G = {
   sol: 1,
   rp: 0,
   paused: false,
   over: false,
-  h: 6, 
+  h: 6,      // година 0–9 (марсіанський день = 10 год)
   m: 0,
   res: { o2: 78, h2o: 54, en: 63 },
 
-  // Модулі бази
+  // Модулі бази — рівень, стан, кризи
   mods: {
     habitat: {
       name: 'Житловий модуль',
@@ -104,10 +110,10 @@ const G = {
     },
   },
 
-  act: 0,
+  act: 0,       // дій за поточний Sol
   idlewarn: false,
 
-  // Будівлі
+  // Будівлі — будуються за RP
   bld: {
     recycler: {
       name: 'Переробник води',
@@ -183,7 +189,7 @@ const G = {
     },
   },
 
-  // цілі місії
+  // 5 цілей місії — відкриваються послідовно
   goals: [
     {
       title: 'Вижити 10 солів',
@@ -222,7 +228,7 @@ const G = {
     },
   ],
 
-  // Польові місії
+  // Польові місії. rep = кулдаун у солях
   ms: [
     {
       id: 'survey',
@@ -406,7 +412,7 @@ const G = {
       need: 'garage',
       rep: 6,
     },
-    // Евакуаційні місії 
+    // Евакуаційні місії — строго по порядку
     {
       id: 'evac1',
       name: 'Сигнал евакуації',
@@ -457,9 +463,9 @@ const G = {
     },
   ],
 
-  emg: [], 
+  emg: [], // активні аварійні місії
 
-  // технології
+  // Дерево технологій — tier = рядок у дереві
   tech: [
     {
       id: 'atmo',
@@ -583,7 +589,7 @@ const G = {
     },
   ],
 
-  // Зони поверхні
+  // Зони поверхні — сітка 3×4
   zones: [
     {
       id: 'base',
@@ -733,7 +739,7 @@ const G = {
       id: 'dc',
       name: 'Глибокий кратер',
       icon: '🕳',
-
+      // Змінено: тепер дає пасивний +O₂/тік замість разового бонусу
       desc: 'Найглибший кратер — кисневмісні газові кишені.',
       bonus: '+0.04 кисню/тік',
       bt: 'o2reg',
@@ -766,7 +772,7 @@ const G = {
 
   plant: { stage: 0, prog: 0, growing: false },
 
-  // Екіпаж 
+  // Екіпаж — hp здоров'я, mor бойовий дух, sk навички
   crew: [
     {
       id: 'koval',
@@ -838,14 +844,14 @@ const G = {
 
   slots: { lab: null, greenhouse: null, medlab: null, workshop: null },
 
-  // бонуси від відкритих зон
+  // Постійні бонуси від відкритих зон
   zb: { wr: 0, rr: 0, eb: 1, rlb: 1, or: 0 },
 
   daily: [],
-  dcf: 0,   
-  dms: 0,   
-  dup: 0,   
-  dzo: 0,   
+  dcf: 0,   // кризи усунені за Sol
+  dms: 0,   // місії запущені за Sol
+  dup: 0,   // покращення за Sol
+  dzo: 0,   // зони відкриті за Sol
   tr: false,
   trNext: 7,
   trOffer: null,
@@ -853,7 +859,7 @@ const G = {
   ending: null,
 };
 
-// етапи вирощування рослини
+// 4 етапи вирощування рослини
 const STAGES = [
   {
     name: 'Підготовка ґрунту',
@@ -889,7 +895,7 @@ const STAGES = [
   },
 ];
 
-// Щоденні завдання
+// Щоденні завдання — 3 рандомних на Sol
 const DTASKS = [
   { desc: 'Усунь будь-яку кризу', rw: 40, chk: () => G.dcf > 0 },
   { desc: 'Запусти будь-яку місію', rw: 30, chk: () => G.dms > 0 },
@@ -901,7 +907,7 @@ const DTASKS = [
   { desc: 'Просто пережити цей Sol', rw: 20, chk: () => true },
 ];
 
-// торговий корабель
+// Що привозить торговий корабель
 const TRADES = [
   { desc: 'Контейнер з водою (+50)', cost: 55, res: 'h2o', amt: 50 },
   { desc: 'Балони з киснем (+45)', cost: 50, res: 'o2', amt: 45 },
@@ -911,7 +917,7 @@ const TRADES = [
   { desc: 'Аварійний кисень (+60)', cost: 75, res: 'o2', amt: 60 },
 ];
 
-// Типи криз
+// Типи криз — посилюють витрати відповідного ресурсу
 const CRISES = {
   fire: {
     lbl: '🔥 Пожежа!',
@@ -957,7 +963,7 @@ const CRISES = {
   },
 };
 
-// Шаблони а. місій
+// Шаблони аварійних місій — генеруються при кризі
 const ETPL = {
   emg_fire: {
     icon: '🔥',
@@ -1024,30 +1030,30 @@ const ETPL = {
   },
 };
 
-
+// Назви ресурсів для логу
 const RL = { o2: 'Кисень', h2o: 'Вода', en: 'Енергія' };
-
+// Назви і кольори рівнів
 const LN = ['', 'Базовий', 'Покращений', 'Розширений', 'Передовий', 'Елітний'];
 const LC = ['', '#e85d04', '#ffb347', '#4ab3ff', '#a855f7', '#3ddc84'];
 
-
+// Вартість покращення модуля і будівлі
 const upgC = (l) => l * 90;
 const bupgC = (l) => l * 120;
-const ET = 45; 
+const ET = 45; // тіки щоб відкрити зону
 
-// Ніч
+// Ніч — коли год >= 5 (панелі не працюють)
 const isN = () => G.h >= 5;
 const hasTech = (id) => G.tech.find((t) => t.id === id)?.done;
 const hasBld = (id) => G.bld[id]?.built;
 
-і
+// Перевіряємо умову евакуації — всі будівлі збудовані АБО всі зони відкриті
 const evacUnlocked = () => G.win.zones || G.win.blds;
 
 let cur = 'home'; // поточна активна вкладка
 
-
-// ============================ Навігація ============================
-
+// ============================
+// Навігація між вкладками
+// ============================
 function goto(page) {
   document
     .querySelectorAll('.page')
@@ -1084,7 +1090,7 @@ document.querySelectorAll('nav a[data-page]').forEach((a) =>
   }),
 );
 
-// Рядок новин
+// Рядок новин, що біжить знизу карти
 const TL = [
   "Зв'язок із Землею: затримка 20 хв • Всі системи в автономному режимі",
   'Температура поверхні: −42°C • Вітер: 18 м/с • Видимість: 4 км',
@@ -1119,7 +1125,7 @@ function showTkr(txt) {
 
 const p2 = (n) => String(n).padStart(2, '0');
 
-
+// Додає запис у журнал подій
 function log(txt, type = '') {
   const t = `Sol ${G.sol} ${p2(G.h)}:${p2(G.m)}`;
   const d = document.createElement('div');
@@ -1129,9 +1135,9 @@ function log(txt, type = '') {
   while (q('elog').children.length > 35) q('elog').lastChild.remove();
 }
 
-
-// ============================ Ресурси — права панель  ============================
-
+// ============================
+// Ресурси — права панель
+// ============================
 function dBars() {
   q('rbars').innerHTML = ['o2', 'h2o', 'en']
     .map((k) => {
@@ -1149,7 +1155,7 @@ function dBars() {
     .join('');
 }
 
-// Аварійне поповненн
+// Аварійне поповнення ресурсу за RP
 function eref(k) {
   const cost = { o2: 35, h2o: 30, en: 25 }[k];
   if (G.rp < cost) {
@@ -1164,7 +1170,7 @@ function eref(k) {
   dBars();
 }
 
-// модулі у правій панелі
+// Список модулів у правій панелі
 function dModList() {
   q('mlist').innerHTML = Object.entries(G.mods)
     .map(([k, m]) => {
@@ -1180,7 +1186,7 @@ function dModList() {
 
 const PLC = ['', '#e85d04', '#ffb347', '#4ab3ff', '#a855f7', '#3ddc84'];
 
-// Кольорові піни на карті
+// Оновлює кольорові піни на карті
 function updPins() {
   Object.entries(G.mods).forEach(([k, m]) => {
     const dot = q(`pd-${k}`),
@@ -1195,7 +1201,7 @@ function updPins() {
       dot.style.boxShadow = `0 0 10px ${c},0 0 22px ${c}55`;
     } else dot.style.cssText = '';
   });
-
+  // Лічильник криз на кнопці навігації
   const cnt = Object.values(G.mods).filter((m) => m.crisis).length;
   const hl = document.querySelector('nav a[data-page="home"]');
   let b = hl.querySelector('.nav-alert');
@@ -1209,16 +1215,16 @@ function updPins() {
   } else if (b) b.remove();
 }
 
-
-// ============================ Ігровий годинник і Sol ============================
-
+// ============================
+// Ігровий годинник і Sol
+// ============================
 function tickTime() {
   G.m++;
   if (G.m >= 60) {
     G.m = 0;
     G.h++;
   }
-  // Новий Sol 
+  // Новий Sol — годинник перевалив за 10
   if (G.h >= 10) {
     G.h = 0;
     G.sol++;
@@ -1231,7 +1237,7 @@ function tickTime() {
   if (nt) isN() ? nt.classList.remove('hidden') : nt.classList.add('hidden');
 }
 
-
+// Місії з кулдауном — відновлюємо після rep солів
 function refreshMs() {
   let n = 0;
   G.ms.forEach((m) => {
@@ -1250,14 +1256,14 @@ function refreshMs() {
   }
 }
 
-// Новий сол
+// Все що відбувається на початку нового Sol
 function newSol() {
   crewDay();
   genDaily();
   checkTrade();
   checkGoals();
   refreshMs();
-
+  // Якщо гравець нічого не робив — попереджаємо
   if (G.act === 0) {
     log('⚠ Жодної активності! RP не нараховується без дій.', 'crisis');
     if (!G.idlewarn) {
@@ -1265,7 +1271,7 @@ function newSol() {
       showTkr('⚠ Без активності RP не накопичуються!');
     }
   } else G.idlewarn = false;
-
+  // Скидаємо щоденні лічильники
   G.act = 0;
   G.dcf = 0;
   G.dms = 0;
@@ -1273,14 +1279,14 @@ function newSol() {
   G.dzo = 0;
 }
 
-
-// ============================ Тік ресурсів ============================ 
-
+// ============================
+// Тік ресурсів (кожну секунду)
+// ============================
 function tickRes() {
   const r = G.res,
     b = G.zb,
     n = isN();
-
+  // Бонуси від технологій
   const atmo = hasTech('atmo') ? 0.8 : 1;
   const hydro = hasTech('hydro');
   const sol2 = hasTech('solar2') ? 1.3 : 1;
@@ -1289,7 +1295,7 @@ function tickRes() {
   const recm = hasTech('recycling') ? 1.5 : 1;
   const tf = hasTech('terraform');
 
-  // Витрати кожного модуля
+  // Витрати від кожного модуля (вищий рівень = трохи ефективніший)
   Object.values(G.mods).forEach((m) => {
     if (m.status === 'offline') return;
     const lm = 1 - (m.lv - 1) * 0.05;
@@ -1300,7 +1306,7 @@ function tickRes() {
     }
     if (m.drain.h2o != null) {
       if (m === G.mods.greenhouse) {
-
+        // Гідропоніка — оранжерея виробляє воду замість споживання
         if (hydro) r.h2o += 0.04 * (m.lv * 0.2 + 0.8);
         else {
           let d = m.drain.h2o * lm;
@@ -1316,22 +1322,22 @@ function tickRes() {
     }
   });
 
-  // енергія
+  // Генерація енергії
   const sol = G.mods.solar;
   if (!sol.crisis && !n) r.en += 0.07 * (1 + (sol.lv - 1) * 0.12) * sol2 * b.eb;
   if (hasBld('battery') && n) r.en += 0.04 * (G.bld.battery.lv || 1);
 
-  //бонуси будівель
+  // Пасивні бонуси будівель
   if (hasBld('recycler')) r.h2o += 0.05 * recm * (G.bld.recycler.lv || 1);
   if (hasBld('o2pump')) r.o2 += 0.03 * (G.bld.o2pump.lv || 1);
   if (tf) { r.o2 += 0.05; r.h2o += 0.03; }
-  r.h2o += b.wr; 
-  r.o2 += b.or;  
+  r.h2o += b.wr; // зони з водою
+  r.o2 += b.or;  // зони з киснем (Глибокий кратер)
 
-
+  // Мікрореактор — страховка від знеструмлення
   if (hasTech('fusion')) r.en = Math.max(15, r.en);
 
-
+  // Лаб пасивно генерує RP
   const lab = G.mods.lab;
   if (!lab.crisis && lab.status !== 'offline' && !document.hidden) {
     const c = G.slots.lab ? G.crew.find((x) => x.id === G.slots.lab) : null;
@@ -1341,13 +1347,13 @@ function tickRes() {
     G.rp += e;
     q('rpn').textContent = Math.floor(G.rp);
   }
-
+  // Ресурси завжди 0–100
   Object.keys(r).forEach((k) => {
     r[k] = Math.max(0, Math.min(100, r[k]));
   });
 }
 
-// Рандомна криза
+// Рандомна поява кризи — шанс зростає з Sol
 function maybeCrisis() {
   if (Math.random() > 0.005 + G.sol * 0.00018) return;
   const free = Object.keys(G.mods).filter((k) => !G.mods[k].crisis);
@@ -1362,12 +1368,12 @@ function maybeCrisis() {
   if (cur === 'missions') dMs();
 }
 
-// Аварійна місія
+// Створює нову аварійну місію
 function spawnEmg(ct, mk) {
   const tpl = ETPL[CRISES[ct].mid];
   if (!tpl) return;
   const id = `emg_${Date.now()}`;
-
+  // Ремонтний відсік скорочує час аварійних місій
   const wl = hasBld('workshop') ? G.bld.workshop.lv || 1 : 0;
   const tm = wl > 0 ? Math.max(0.4, 1 - wl * 0.2) : 1;
   G.emg.push({
@@ -1387,7 +1393,7 @@ function spawnEmg(ct, mk) {
   });
 }
 
-// Прогрес місій
+// Прогрес активних місій
 function tickMs() {
   [...G.ms, ...G.emg].forEach((m) => {
     if (!m.on || m.done) return;
@@ -1397,7 +1403,7 @@ function tickMs() {
   if (cur === 'missions') dMs();
 }
 
-// Завершення місії
+// Завершення місії — видаємо нагороду, знімаємо кризу
 function finM(m) {
   m.done = true;
   m.on = false;
@@ -1408,7 +1414,7 @@ function finM(m) {
     log(`Кризу усунено: ${G.mods[m.mk].name}`, 'ok');
     G.dcf++;
   }
-  // евакуаційна
+  // Остання евакуаційна місія — кінець гри
   if (m.ev === 3) {
     G.win.evac = true;
     log('Евакуація завершена! Екіпаж на шляху додому.', 'upgrade');
@@ -1432,7 +1438,9 @@ function finM(m) {
   }
 }
 
-// ============================ Рослина ============================ 
+// ============================
+// Рослина
+// ============================
 function tickPlant() {
   const p = G.plant;
   if (!p.growing || p.stage === 0 || p.stage > 4) return;
@@ -1441,7 +1449,7 @@ function tickPlant() {
     if (cur === 'plant') dPlant();
     return;
   }
-  // Оранжерея
+  // Біолог в оранжереї + лампи росту прискорюють
   const cg = G.slots.greenhouse
     ? G.crew.find((c) => c.id === G.slots.greenhouse)
     : null;
@@ -1479,7 +1487,7 @@ function startPlant() {
   if (cur === 'plant') dPlant();
 }
 
-
+// Рендер сторінки рослини
 function dPlant() {
   const p = G.plant,
     el = q('pgplant');
@@ -1530,8 +1538,9 @@ function dPlant() {
     </div>`;
 }
 
-// ============================ Дослідження зон поверхні ============================
-
+// ============================
+// Дослідження зон поверхні
+// ============================
 function tickExp() {
   G.zones.forEach((z) => {
     if (!z.ul || z.open) return;
@@ -1549,7 +1558,7 @@ function tickExp() {
   if (G.zones.some((z) => z.ul) && cur === 'explore') dExp();
 }
 
-// бонус відкритої зони
+// Застосовує бонус відкритої зони
 function zBonus(z) {
   const b = G.zb;
   const rv = (k) => { G.res[k] = Math.min(100, G.res[k] + z.bv); };
@@ -1557,11 +1566,11 @@ function zBonus(z) {
     case 'rp': G.rp += z.bv; q('rpn').textContent = Math.floor(G.rp); break;
     case 'h2o': rv('h2o'); break;
     case 'o2': rv('o2'); break;
-    case 'h2oreg': b.wr += 0.05; break;
-    case 'rpreg': b.rr += 0.3; break;
-    case 'ebst': b.eb += 0.25; break;
-    case 'rplabbst': b.rlb += 0.25; break; 
-    case 'o2reg': b.or += 0.04; break;  
+    case 'h2oreg': b.wr += 0.05; break; // постійний +вода
+    case 'rpreg': b.rr += 0.3; break;   // постійний +RP
+    case 'ebst': b.eb += 0.25; break;   // +ефективність панелей
+    case 'rplabbst': b.rlb += 0.25; break; // +RP від лабу
+    case 'o2reg': b.or += 0.04; break;  // постійний +кисень (Глибокий кратер)
   }
 }
 
@@ -1578,7 +1587,7 @@ function startExp(zid) {
   dExp();
 }
 
-// Рендер сітки зон
+// Рендер сітки зон 3×4
 function dExp() {
   const cells = Array(3).fill(null).map(() => Array(4).fill(null));
   G.zones.forEach((z) => { cells[z.r][z.c] = z; });
@@ -1602,7 +1611,7 @@ function dExp() {
     .join('');
 }
 
-// 3 рандомних завдання
+// 3 рандомних завдання на кожен Sol
 function genDaily() {
   G.daily = [...DTASKS]
     .sort(() => Math.random() - 0.5)
@@ -1623,7 +1632,7 @@ function claimTask(i) {
   dMs();
 }
 
-// Торговий корабель
+// Торговий корабель — раз на ~6 солів
 function checkTrade() {
   if (G.sol < G.trNext) return;
   G.tr = true;
@@ -1692,7 +1701,7 @@ function checkGoals() {
   dGoals();
 }
 
-// Рендер цілей у правій панелі
+// Рендер цілей у правій панелі — виконані горять зеленим
 function dGoals() {
   q('objp').innerHTML = G.goals
     .map((o) => {
@@ -1709,7 +1718,7 @@ function dGoals() {
     .join('');
 }
 
-// Тип кінцівкі
+// Визначаємо тип кінцівки
 function checkEnd() {
   const w = G.win;
   const n = [w.plant, w.surv, w.evac, w.zones, w.blds].filter(Boolean).length;
@@ -1763,13 +1772,13 @@ function end(type) {
   q('gover').classList.remove('hidden');
 }
 
-// Оновлення здоров'я екіпажу
+// Оновлення здоров'я екіпажу кожен Sol
 function crewDay() {
   const ml = hasBld('medlab') ? G.bld.medlab.lv || 1 : 0;
   const suit = hasTech('medsuit');
   const inMed = G.slots.medlab;
   G.crew.forEach((c) => {
-    const hr = ml > 0 ? 1.5 * ml : -0.8;
+    const hr = ml > 0 ? 1.5 * ml : -0.8; // без медблоку HP падає
     const sm = suit ? 0.4 : 1;
     const hb = inMed === c.id ? 1.5 : 1;
     c.hp = Math.max(0, Math.min(100, c.hp + hr * sm * hb));
@@ -1778,7 +1787,7 @@ function crewDay() {
   if (cur === 'crew') dCrew();
 }
 
-// Екіпаж
+// Рендер карток екіпажу з призначенням
 function dCrew() {
   q('gcrw').innerHTML = G.crew
     .map((c) => {
@@ -1824,8 +1833,9 @@ function assCrew(cid, bk) {
   dCrew();
 }
 
-
-// ============================ Будівлі ============================
+// ============================
+// Будівлі
+// ============================
 function dBld() {
   q('gbld').innerHTML = Object.entries(G.bld)
     .map(([k, b]) => {
@@ -1877,14 +1887,15 @@ function upgBld(k) {
   dBld();
 }
 
-
-// ================ Місії ==============
+// ============================
+// Місії
+// ============================
 function dMs() {
   const e1 = G.ms.find((m) => m.ev === 1)?.done;
   const e2 = G.ms.find((m) => m.ev === 2)?.done;
   const eu = evacUnlocked();
 
-  // Аварійні місії
+  // Аварійні місії — на весь рядок, першими
   const emgH = G.emg
     .filter((m) => !m.done)
     .map((m) => {
@@ -1906,7 +1917,7 @@ function dMs() {
 
   const msH = G.ms
     .map((m) => {
-
+      // Умова доступності для евакуацій
       const rok = m.ev
         ? eu &&
           (m.ev === 1 ? G.bld['antenna']?.built : true) &&
@@ -1929,7 +1940,7 @@ function dMs() {
 
       if (m.done) {
         const hasCooldown = m.rep && m.ropen;
-
+        // Яскрава кнопка кулдауну — показує коли місія відновиться
         btxt = hasCooldown ? `↻ Знову доступна з Sol ${m.ropen}` : '✓ Виконано';
         bcls = hasCooldown ? 'btn-cooldown' : 'is-built';
         dis = true;
@@ -1960,6 +1971,7 @@ function dMs() {
         dis = false;
       }
 
+      // Для евакуаційних місій показуємо умову відкриття
       const evacInfo = m.ev && m.evacDesc
         ? `<div class="evac-unlock-info">${m.evacDesc}</div>`
         : '';
@@ -2093,7 +2105,7 @@ function doRes(id) {
   dRes();
 }
 
-// Модальне вікно
+// Модальне вікно модуля
 function openMod(k) {
   const m = G.mods[k];
   if (!m) return;
@@ -2136,7 +2148,7 @@ function emgFromMod(id) {
   setTimeout(() => startEmg(id), 100);
 }
 
-// Ручне усунення кризи
+// Ручне усунення кризи (без нагороди)
 function fixCrisis(k) {
   G.mods[k].crisis = null;
   G.dcf++;
@@ -2180,7 +2192,7 @@ document.querySelectorAll('.pin').forEach((p) => {
   });
 });
 
-// Поразка 
+// Поразка — будь-який ресурс = 0 або всі загинули
 function checkDef() {
   if (G.over) return;
   for (const [, v] of Object.entries(G.res))
@@ -2220,7 +2232,7 @@ function restart() {
 
 q('rbtn').addEventListener('click', restart);
 
-// Головний ігровий цикл
+// Головний ігровий цикл — кожну секунду
 function loop() {
   if (G.over || G.paused) return;
   tickTime();
